@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.EditarEntreno.ControlEditarEntreno">
+   <children>
+      <VBox prefHeight="400.0" prefWidth="290.0">
+         <children>
+            <Label text="Editar Entreno">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label text="Nombre:" />
+            <TextField fx:id="Nombre" />
+            <Label text="Repeticiones:" />
+            <TextField fx:id="Repeticiones" />
+            <Label text="Fallos:" />
+            <TextField fx:id="Fallos" />
+            <Label text="Aciertos:" />
+            <TextField fx:id="Aciertos" />
+            <CheckBox fx:id="Completado" mnemonicParsing="false" text="Completado" />
+            <Button mnemonicParsing="false" onAction="#Actualizar" text="Actualizar" />
+            <Button mnemonicParsing="false" onAction="#Aceptar" text="Aceptar" />
+            <Button mnemonicParsing="false" onAction="#EditarEjercicios" text="Editar Ejercicios" />
+         </children>
+      </VBox>
+      <VBox prefHeight="400.0" prefWidth="355.0">
+         <children>
+            <TableView fx:id="tablaEntrenamientos" prefHeight="414.0" prefWidth="339.0">
+              <columns>
+                <TableColumn fx:id="colIdEntreno" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="colNombreEntreno" prefWidth="150.0" text="Nombre Entreno" />
+                <TableColumn fx:id="colRepeticiones" prefWidth="100.0" text="Repeticiones" />
+                <TableColumn fx:id="colFallos" prefWidth="75.0" text="Fallos" />
+                <TableColumn fx:id="colAciertos" prefWidth="75.0" text="Aciertos" />
+                <TableColumn fx:id="colCompletado" prefWidth="150.0" text="Completado" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+</HBox>
