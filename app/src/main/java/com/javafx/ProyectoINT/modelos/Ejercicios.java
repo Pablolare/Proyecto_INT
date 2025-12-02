@@ -6,11 +6,18 @@ public class Ejercicios {
     private String tipo;
     private String finalidad;
 
-    public Ejercicios( int id_ejer, String nombre_ejer, String tipo, String finalidad){
-        this.id_ejer=id_ejer;
-        this.nombre_ejer=nombre_ejer;
-        this.tipo=tipo;
-        this.finalidad=finalidad;
+    public Ejercicios(int id_ejer, String nombre_ejer, String tipo, String finalidad) {
+        this.id_ejer = id_ejer;
+        this.nombre_ejer = nombre_ejer;
+        this.tipo = tipo;
+        this.finalidad = finalidad;
+    }
+
+    // Constructor sin ID (para cuando creas un nuevo ejercicio)
+    public Ejercicios(String nombre_ejer, String tipo, String finalidad) {
+        this.nombre_ejer = nombre_ejer;
+        this.tipo = tipo;
+        this.finalidad = finalidad;
     }
 
     public int getId_ejer() {
@@ -28,9 +35,6 @@ public class Ejercicios {
     public String getFinalidad() {
         return finalidad;
     }
-
-
-
 
     public void setId_ejer(int id_ejer) {
         this.id_ejer = id_ejer;

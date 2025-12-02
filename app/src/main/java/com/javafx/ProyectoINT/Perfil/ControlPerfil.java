@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 
 import com.javafx.ProyectoINT.ConexionBD;
 import com.javafx.ProyectoINT.modelos.Usuario;
+import com.javafx.ProyectoINT.modelos.UsuarioDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,7 +22,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-public class ControlPerfil{
+public class ControlPerfil {
     private ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     @FXML
     private TableView<Usuario> tablaPerfil;
@@ -54,10 +55,10 @@ public class ControlPerfil{
     }
 
     @FXML
-    void Aceptar(ActionEvent event) throws IOException{
+    void Aceptar(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
         Parent root = loader.load();
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
@@ -69,43 +70,62 @@ public class ControlPerfil{
             String consulta = "SELECT * FROM Usuario";
             PreparedStatement statment = conexion.prepareStatement(consulta);
             ResultSet resultado = statment.executeQuery();
-            
+
             listaUsuarios.clear();
-            
+
             while (resultado.next()) {
                 Usuario usuario = new Usuario(
-                    resultado.getInt("id_usuario"),
-                    resultado.getString("nombre"),
-                    resultado.getString("apellido"),
-                    resultado.getString("login"),
-                    resultado.getString("contraseña"),
-                    resultado.getString("rol"),
-                    resultado.getString("correo")
-                );
+                        resultado.getInt("id_usuario"),
+                        resultado.getString("nombre"),
+                        resultado.getString("apellido"),
+                        resultado.getString("login"),
+                        resultado.getString("contraseña"),
+                        resultado.getString("rol"),
+                        resultado.getString("correo"));
                 listaUsuarios.add(usuario);
             }
-            
+
             resultado.close();
             statment.close();
-            
+
         } catch (Exception e) {
             System.out.println("Error al cargar ejercicios: " + e.getMessage());
         }
     }
 
     @FXML
-    void BorrarCuenta(ActionEvent event) {
+    void BorrarCuenta(ActionEvent event) throws IOException {
+        Usuario seleccionado = tablaPerfil.getSelectionModel().getSelectedItem();
 
+        if (seleccionado == null) {
+            System.out.println("Por favor selecciona un usuario para borrar");
+            return;
+        }
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+        if (usuarioDAO.borrarUsuario(seleccionado.getId_usuario())) {
+            System.out.println("Usuario eliminado exitosamente");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/InicioSesion.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            System.out.println("No se pudo eliminar el usuario");
+        }
     }
 
     @FXML
-    void CerrarSesion(ActionEvent event) {
-
+    void CerrarSesion(ActionEvent event) throws IOException {
+        System.out.println("Cerrando sesión...");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/InicioSesion.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
+
 }
-
-
-
-
-
-

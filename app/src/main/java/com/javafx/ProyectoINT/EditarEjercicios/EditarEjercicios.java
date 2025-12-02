@@ -23,6 +23,4 @@ public class EditarEjercicios extends Application{
         
         
     }
-
-    
 }

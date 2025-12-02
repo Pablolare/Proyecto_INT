@@ -1,11 +1,11 @@
 package com.javafx.ProyectoINT.PagAñadirEntreno;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-import com.javafx.ProyectoINT.ConexionBD;
+import java.io.IOException;
+
 import com.javafx.ProyectoINT.modelos.Ejercicios;
+import com.javafx.ProyectoINT.modelos.EjerciciosDAO;
+import com.javafx.ProyectoINT.modelos.Entrenamiento;
+import com.javafx.ProyectoINT.modelos.EntrenamientoDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 
 public class ControlPagAñadirEntreno {
     private ObservableList<Ejercicios> listaEjercicios = FXCollections.observableArrayList();
+
     @FXML
     private TableView<Ejercicios> tablaEjerNuevoEntreno;
     @FXML
@@ -32,10 +33,10 @@ public class ControlPagAñadirEntreno {
     private TableColumn<Ejercicios, String> colTipo;
     @FXML
     private TableColumn<Ejercicios, String> colFinalidad;
-    
+
     @FXML
     private Label nombreEntreno;
-    
+
     @FXML
     private TextField txtNuevoEntreno;
 
@@ -46,53 +47,88 @@ public class ControlPagAñadirEntreno {
         colFinalidad.setCellValueFactory(new PropertyValueFactory<>("finalidad"));
         tablaEjerNuevoEntreno.setItems(listaEjercicios);
         cargarEjerciciosDesdeBD();
+
+        txtNuevoEntreno.textProperty().addListener((obs, oldValue, newValue) -> {
+            nombreEntreno.setText(newValue);
+            cargarEjerciciosDesdeBD();
+        });
     }
 
     @FXML
-    void AgregarEjercicio(ActionEvent event) throws IOException {
-        
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/AgregarEjercicio.fxml"));
-        Parent root = loader.load();    
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+    void AgregarEjercicio(ActionEvent event) {
+        String nombreEntrenamiento = txtNuevoEntreno.getText();
+        Ejercicios seleccionado = tablaEjerNuevoEntreno.getSelectionModel().getSelectedItem();
+
+        if (nombreEntrenamiento == null || nombreEntrenamiento.trim().isEmpty()) {
+            System.out.println("Error: Debes ingresar un nombre para el entrenamiento primero");
+            return;
+        }
+
+        if (seleccionado == null) {
+            System.out.println("Error: Selecciona un ejercicio para agregar");
+            return;
+        }
+
+        int id_usuario = 1;
+
+        Entrenamiento entrenamiento = new Entrenamiento(
+                id_usuario,
+                seleccionado.getId_ejer(),
+                nombreEntrenamiento,
+                0,
+                0,
+                0,
+                false);
+
+        EntrenamientoDAO dao = new EntrenamientoDAO();
+        if (dao.insertarEntrenamiento(entrenamiento)) {
+            System.out.println("Ejercicio añadido al entrenamiento: " + seleccionado.getNombre_ejer());
+            cargarEjerciciosDesdeBD();
+        } else {
+            System.out.println("Error al añadir ejercicio al entrenamiento");
+        }
     }
 
     @FXML
-    void PagAtras(ActionEvent event) throws IOException{
+    void PagAtras(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
         Parent root = loader.load();
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
     private void cargarEjerciciosDesdeBD() {
-        try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            String consulta = "SELECT * FROM Ejercicio";
-            PreparedStatement statment = conexion.prepareStatement(consulta);
-            ResultSet resultado = statment.executeQuery();
-            
-            listaEjercicios.clear();
-            
-            while (resultado.next()) {
-                Ejercicios ejercicio = new Ejercicios(
-                    resultado.getInt("id_ejer"),
-                    resultado.getString("nombre_ejer"),
-                    resultado.getString("tipo"),
-                    resultado.getString("finalidad")
-                );
+        EjerciciosDAO dao = new EjerciciosDAO();
+        ObservableList<Ejercicios> todosEjercicios = dao.cargarEjerciciosDesdeBD();
+
+        listaEjercicios.clear();
+
+        String nombreEntrenamiento = txtNuevoEntreno.getText();
+
+        if (nombreEntrenamiento == null || nombreEntrenamiento.trim().isEmpty()) {
+            listaEjercicios.addAll(todosEjercicios);
+            return;
+        }
+
+        EntrenamientoDAO entrenamientoDAO = new EntrenamientoDAO();
+        ObservableList<Entrenamiento> entrenamientos = entrenamientoDAO.cargarEntrenamientosDesdeBD();
+
+        for (Ejercicios ejercicio : todosEjercicios) {
+            boolean yaEstaEnEntrenamiento = false;
+
+            for (Entrenamiento entrenamiento : entrenamientos) {
+                if (entrenamiento.getNombre_entreno().equals(nombreEntrenamiento)
+                        && entrenamiento.getId_ejer() == ejercicio.getId_ejer()) {
+                    yaEstaEnEntrenamiento = true;
+                    break;
+                }
+            }
+
+            if (!yaEstaEnEntrenamiento) {
                 listaEjercicios.add(ejercicio);
             }
-            
-            resultado.close();
-            statment.close();
-            
-        } catch (Exception e) {
-            System.out.println("Error al cargar ejercicios: " + e.getMessage());
         }
     }
 }

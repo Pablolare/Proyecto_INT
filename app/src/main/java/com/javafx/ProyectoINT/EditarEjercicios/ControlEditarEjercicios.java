@@ -1,12 +1,8 @@
 package com.javafx.ProyectoINT.EditarEjercicios;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import com.javafx.ProyectoINT.ConexionBD;
 import com.javafx.ProyectoINT.modelos.Ejercicios;
+import com.javafx.ProyectoINT.modelos.EjerciciosDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,42 +46,57 @@ public class ControlEditarEjercicios {
         colFinalidad.setCellValueFactory(new PropertyValueFactory<>("finalidad"));
         tablaEditarEjercicios.setItems(listaEjercicios);
         cargarEjerciciosDesdeBD();
+        tablaEditarEjercicios.getSelectionModel().selectedItemProperty()
+                .addListener((obs, oldSelection, newSelection) -> {
+                    if (newSelection != null) {
+                        txNombre.setText(newSelection.getNombre_ejer());
+                        txTipo.setText(newSelection.getTipo());
+                        txFinalidad.setText(newSelection.getFinalidad());
+                    }
+                });
     }
 
     @FXML
-    void Aceptar(ActionEvent event) throws IOException{
+    void Actualizar(ActionEvent event) {
+        Ejercicios seleccionado = tablaEditarEjercicios.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            System.out.println("Selecciona un ejercicio para actualizar");
+            return;
+        }
+        seleccionado.setNombre_ejer(txNombre.getText());
+        seleccionado.setTipo(txTipo.getText());
+        seleccionado.setFinalidad(txFinalidad.getText());
+
+        EjerciciosDAO dao = new EjerciciosDAO();
+        dao.actualizarEjercicio(seleccionado);
+        cargarEjerciciosDesdeBD();
+    }
+
+    @FXML
+    void Borrar(ActionEvent event) {
+        Ejercicios seleccionado = tablaEditarEjercicios.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            System.out.println("Selecciona un ejercicio para borrar");
+            return;
+        }
+        EjerciciosDAO dao = new EjerciciosDAO();
+        dao.borrarEjercicio(seleccionado.getId_ejer());
+        cargarEjerciciosDesdeBD();
+    }
+
+    @FXML
+    void Aceptar(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/EditarEntreno.fxml"));
-        Parent root = loader.load();    
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
-    
+
     private void cargarEjerciciosDesdeBD() {
-        try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            String consulta = "SELECT * FROM Ejercicio";
-            PreparedStatement statment = conexion.prepareStatement(consulta);
-            ResultSet resultado = statment.executeQuery();
-            
-            listaEjercicios.clear();
-            
-            while (resultado.next()) {
-                Ejercicios ejercicio = new Ejercicios(
-                    resultado.getInt("id_ejer"),
-                    resultado.getString("nombre_ejer"),
-                    resultado.getString("tipo"),
-                    resultado.getString("finalidad")
-                );
-                listaEjercicios.add(ejercicio);
-            }
-            
-            resultado.close();
-            statment.close();
-            
-        } catch (Exception e) {
-            System.out.println("Error al cargar ejercicios: " + e.getMessage());
-        }
+        EjerciciosDAO dao = new EjerciciosDAO();
+        listaEjercicios.clear();
+        listaEjercicios.addAll(dao.cargarEjerciciosDesdeBD());
     }
 }

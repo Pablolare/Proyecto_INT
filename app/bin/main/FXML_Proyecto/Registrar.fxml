@@ -25,18 +25,20 @@
             </VBox>
             <VBox prefHeight="100.0" prefWidth="320.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contraseña:" />
-                  <TextField fx:id="txtContraseña" />
+                  <Label text="Apellidos:" />
+                  <TextField fx:id="txtApellidos" />
                </children>
             </VBox>
          </children>
       </HBox>
       <Label text="Correo:" />
-      <TextField />
-      <Label text="Contraseña:" />
-      <TextField />
+      <TextField fx:id="txtCorreo" />
+      <Label text="Rol:" />
+      <TextField fx:id="txtRol" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contraseña:" />
+      <TextField fx:id="txtContraseña" />
       <Label text="Confirmar contrseña:" />
-      <TextField />
+      <TextField fx:id="txtConfirmarContraseña" />
       <Label onMouseClicked="#InicioSesion" text="Tengo un acuenta creada" />
       <Button mnemonicParsing="false" onAction="#CrearCuenta" text="Crear Cuenta:" />
    </children>

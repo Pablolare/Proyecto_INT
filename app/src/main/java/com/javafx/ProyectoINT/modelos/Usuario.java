@@ -1,25 +1,35 @@
 package com.javafx.ProyectoINT.modelos;
 
-public class Usuario  {
+public class Usuario {
 
-    private int id_usuario; 
+    private int id_usuario;
     private String nombre;
-    private String apellido; 
-    private String login; 
-    private String contraseña; 
-    private String rol; 
+    private String apellido;
+    private String login;
+    private String contraseña;
+    private String rol;
     private String correo;
 
-    public Usuario(int id_usuario, String nombre, String apellido, String login, String contraseña, String rol, String correo){
-        
-        this.id_usuario=id_usuario;
-        this.nombre=nombre;
-        this.apellido=apellido;
-        this.login=login;
-        this.contraseña=contraseña;
-        this.rol=rol;
-        this.correo=correo;
-        
+    public Usuario(int id_usuario, String nombre, String apellido, String login, String contraseña, String rol,
+            String correo) {
+
+        this.id_usuario = id_usuario;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.login = login;
+        this.contraseña = contraseña;
+        this.rol = rol;
+        this.correo = correo;
+
+    }
+
+    public Usuario(String nombre, String apellido, String login, String contraseña, String rol, String correo) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.login = login;
+        this.contraseña = contraseña;
+        this.rol = rol;
+        this.correo = correo;
     }
 
     public int getId_usuario() {
@@ -49,9 +59,6 @@ public class Usuario  {
     public String getCorreo() {
         return this.correo;
     }
-
-
-
 
     public void setId_usuario(int id_usuario) {
         this.id_usuario = id_usuario;
