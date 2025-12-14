@@ -1,6 +1,11 @@
 package com.javafx.ProyectoINT.EditarEntreno;
 
 import java.io.IOException;
+
+import org.controlsfx.validation.ValidationResult;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
+
 import com.javafx.ProyectoINT.modelos.Entrenamiento;
 import com.javafx.ProyectoINT.modelos.EntrenamientoDAO;
 
@@ -52,6 +57,8 @@ public class ControlEditarEntreno {
     @FXML
     private TableColumn<Entrenamiento, Boolean> colCompletado;
 
+    private ValidationSupport validationSupport;
+
     @FXML
     void initialize() {
         colIdEntreno.setCellValueFactory(new PropertyValueFactory<>("id_entreno"));
@@ -62,7 +69,7 @@ public class ControlEditarEntreno {
         colCompletado.setCellValueFactory(new PropertyValueFactory<>("completado"));
         tablaEntrenamientos.setItems(listaEntrenamientos);
         cargarEjerciciosDesdeBD();
-        // Listener para cargar datos al seleccionar un entrenamiento
+        configurarValidaciones();
         tablaEntrenamientos.getSelectionModel().selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
                     if (newSelection != null) {
@@ -73,6 +80,34 @@ public class ControlEditarEntreno {
                         Completado.setSelected(newSelection.isCompletado());
                     }
                 });
+    }
+
+    private void configurarValidaciones() {
+        validationSupport = new ValidationSupport();
+
+        Validator<String> nombreValidator = (control, value) -> {
+            if (value == null || value.trim().isEmpty()) {
+                return ValidationResult.fromError(control, "El nombre es obligatorio");
+            }
+            return null;
+        };
+
+        Validator<String> numeroValidator = (control, value) -> {
+            if (value == null || value.trim().isEmpty()) {
+                return ValidationResult.fromError(control, "El campo es obligatorio");
+            }
+            try {
+                Integer.parseInt(value.trim());
+            } catch (NumberFormatException e) {
+                return ValidationResult.fromError(control, "Debe ser un número entero");
+            }
+            return null;
+        };
+
+        validationSupport.registerValidator(Nombre, nombreValidator);
+        validationSupport.registerValidator(Repeticiones, numeroValidator);
+        validationSupport.registerValidator(Fallos, numeroValidator);
+        validationSupport.registerValidator(Aciertos, numeroValidator);
     }
 
     @FXML
@@ -87,6 +122,11 @@ public class ControlEditarEntreno {
 
     @FXML
     void Actualizar(ActionEvent event) {
+        if (validationSupport.isInvalid()) {
+            System.out.println("Por favor, corrija los errores en el formulario");
+            return;
+        }
+
         Entrenamiento seleccionado = tablaEntrenamientos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
             System.out.println("Selecciona un entrenamiento para actualizar");

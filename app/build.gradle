@@ -13,24 +13,30 @@ javafx {
 }
 
 dependencies {
-    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'com.mysql:mysql-connector-j:8.0.33'
+    // https://mvnrepository.com/artifact/org.controlsfx/controlsfx
+    implementation("org.controlsfx:controlsfx:11.2.2")
 }
 
-java { //Se indica la versión de JDK que ha de utilizar
+java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(24)
     }
 }
 
-application { //Definimos clase principal del proyecto
-    mainClass = 'com.javafx.ProyectoINT.InicioSesion.InicioSesion'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+application {
+    mainClass = 'com.javafx.ProyectoINT.InicioSesionMain'
 }
 
 sourceSets {
   main {
     resources {
         srcDirs = ["src/main/resources"]
-        includes = ["**/*.fxml","**/*.png","**/*.properties"]  //Importante para poder abrir una extensión no reconocida
+        includes = ["**/*.fxml","**/*.png","**/*.properties","**/*.css"]
     }
   }
 }

@@ -2,6 +2,10 @@ package com.javafx.ProyectoINT.CrearEjercicio;
 
 import java.io.IOException;
 
+import org.controlsfx.validation.ValidationResult;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
+
 import com.javafx.ProyectoINT.modelos.Ejercicios;
 import com.javafx.ProyectoINT.modelos.EjerciciosDAO;
 
@@ -29,13 +33,54 @@ public class ControlCrearEjercicio {
     @FXML
     private TextField txtTipo;
 
+    private ValidationSupport validationSupport;
+
+    @FXML
+    void initialize() {
+        configurarValidaciones();
+    }
+
+    private void configurarValidaciones() {
+        validationSupport = new ValidationSupport();
+
+        Validator<String> nombreValidator = (control, value) -> {
+            if (value == null || value.trim().isEmpty()) {
+                return ValidationResult.fromError(control, "El nombre del ejercicio es obligatorio");
+            }
+            return null;
+        };
+
+        Validator<String> tipoValidator = (control, value) -> {
+            if (value == null || value.trim().isEmpty()) {
+                return ValidationResult.fromError(control, "El tipo es obligatorio");
+            }
+            return null;
+        };
+
+        Validator<String> finalidadValidator = (control, value) -> {
+            if (value == null || value.trim().isEmpty()) {
+                return ValidationResult.fromError(control, "La finalidad es obligatoria");
+            }
+            return null;
+        };
+
+        validationSupport.registerValidator(txtNombreEjercicio, nombreValidator);
+        validationSupport.registerValidator(txtTipo, tipoValidator);
+        validationSupport.registerValidator(txtFinalidad, finalidadValidator);
+    }
+
     @FXML
     void Creacion(ActionEvent event) throws IOException {
+        if (validationSupport.isInvalid()) {
+            System.out.println("Por favor, corrija los errores en el formulario antes de guardar");
+            return;
+        }
+
         Ejercicios ejercicio = new Ejercicios(txtNombreEjercicio.getText(), txtTipo.getText(), txtFinalidad.getText());
         EjerciciosDAO dao = new EjerciciosDAO();
         dao.insertarEjercicio(ejercicio);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/AgregarEjercicio.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/ListarEjercicios.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
@@ -45,7 +90,7 @@ public class ControlCrearEjercicio {
 
     @FXML
     void PagAtras(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/AgregarEjercicio.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/ListarEjercicios.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);

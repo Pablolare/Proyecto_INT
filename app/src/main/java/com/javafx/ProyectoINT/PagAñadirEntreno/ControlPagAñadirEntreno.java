@@ -2,6 +2,10 @@ package com.javafx.ProyectoINT.PagAñadirEntreno;
 
 import java.io.IOException;
 
+import org.controlsfx.validation.ValidationResult;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
+
 import com.javafx.ProyectoINT.modelos.Ejercicios;
 import com.javafx.ProyectoINT.modelos.EjerciciosDAO;
 import com.javafx.ProyectoINT.modelos.Entrenamiento;
@@ -40,6 +44,8 @@ public class ControlPagAñadirEntreno {
     @FXML
     private TextField txtNuevoEntreno;
 
+    private ValidationSupport validationSupport;
+
     @FXML
     void initialize() {
         colNombreEjer.setCellValueFactory(new PropertyValueFactory<>("nombre_ejer"));
@@ -47,6 +53,7 @@ public class ControlPagAñadirEntreno {
         colFinalidad.setCellValueFactory(new PropertyValueFactory<>("finalidad"));
         tablaEjerNuevoEntreno.setItems(listaEjercicios);
         cargarEjerciciosDesdeBD();
+        configurarValidaciones();
 
         txtNuevoEntreno.textProperty().addListener((obs, oldValue, newValue) -> {
             nombreEntreno.setText(newValue);
@@ -54,15 +61,28 @@ public class ControlPagAñadirEntreno {
         });
     }
 
+    private void configurarValidaciones() {
+        validationSupport = new ValidationSupport();
+
+        Validator<String> nombreValidator = (control, value) -> {
+            if (value == null || value.trim().isEmpty()) {
+                return ValidationResult.fromError(control, "El nombre del entrenamiento es obligatorio");
+            }
+            return null;
+        };
+
+        validationSupport.registerValidator(txtNuevoEntreno, nombreValidator);
+    }
+
     @FXML
     void AgregarEjercicio(ActionEvent event) {
-        String nombreEntrenamiento = txtNuevoEntreno.getText();
-        Ejercicios seleccionado = tablaEjerNuevoEntreno.getSelectionModel().getSelectedItem();
-
-        if (nombreEntrenamiento == null || nombreEntrenamiento.trim().isEmpty()) {
-            System.out.println("Error: Debes ingresar un nombre para el entrenamiento primero");
+        if (validationSupport.isInvalid()) {
+            System.out.println("Por favor, ingresa un nombre para el entrenamiento");
             return;
         }
+
+        String nombreEntrenamiento = txtNuevoEntreno.getText();
+        Ejercicios seleccionado = tablaEjerNuevoEntreno.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
             System.out.println("Error: Selecciona un ejercicio para agregar");

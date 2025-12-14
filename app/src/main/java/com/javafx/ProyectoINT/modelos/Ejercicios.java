@@ -13,7 +13,6 @@ public class Ejercicios {
         this.finalidad = finalidad;
     }
 
-    // Constructor sin ID (para cuando creas un nuevo ejercicio)
     public Ejercicios(String nombre_ejer, String tipo, String finalidad) {
         this.nombre_ejer = nombre_ejer;
         this.tipo = tipo;

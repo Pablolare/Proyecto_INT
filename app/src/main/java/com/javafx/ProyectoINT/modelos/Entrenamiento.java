@@ -24,7 +24,6 @@ public class Entrenamiento {
         this.completado = completado;
     }
 
-    // Constructor sin ID (para cuando creas un nuevo entrenamiento)
     public Entrenamiento(int id_usuario, int id_ejer, String nombre_entreno, int repeticiones, int fallos, int aciertos,
             boolean completado) {
         this.id_usuario = id_usuario;

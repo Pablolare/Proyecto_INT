@@ -7,12 +7,11 @@ import javafx.collections.ObservableList;
 
 public class UsuarioDAO {
 
-    // CREATE - Insertar nuevo usuario
     public boolean insertarUsuario(Usuario usuario) {
         String sql = "INSERT INTO Usuario (nombre, apellido, login, contraseña, rol, correo) VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
+            Connection conn = ConexionBD.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, usuario.getNombre());
@@ -32,12 +31,11 @@ public class UsuarioDAO {
         }
     }
 
-    // UPDATE - Actualizar usuario existente
     public boolean actualizarUsuario(Usuario usuario) {
         String sql = "UPDATE Usuario SET nombre=?, apellido=?, login=?, contraseña=?, rol=?, correo=? WHERE id_usuario=?";
 
         try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
+            Connection conn = ConexionBD.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, usuario.getNombre());
@@ -58,12 +56,11 @@ public class UsuarioDAO {
         }
     }
 
-    // DELETE - Borrar usuario
     public boolean borrarUsuario(int id_usuario) {
         String sql = "DELETE FROM Usuario WHERE id_usuario=?";
 
         try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
+            Connection conn = ConexionBD.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, id_usuario);
 
@@ -82,7 +79,7 @@ public class UsuarioDAO {
         String sql = "SELECT * FROM Usuario";
 
         try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
+            Connection conn = ConexionBD.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 

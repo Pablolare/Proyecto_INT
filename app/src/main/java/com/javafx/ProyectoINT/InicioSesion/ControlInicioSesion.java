@@ -18,8 +18,11 @@ import java.sql.*;
 
 public class ControlInicioSesion {
 
+    // Variable estática para guardar el ID del usuario que inició sesión
+    public static int usuarioLogueadoId = -1;
+
     @FXML
-    private TextField txtContraseña;
+    private javafx.scene.control.PasswordField txtContraseña;
 
     @FXML
     private TextField txtUsuarioCorreo;
@@ -38,6 +41,9 @@ public class ControlInicioSesion {
 
         if (usuario != null && usuario.getContraseña().equals(contraseña)) {
             System.out.println("Inicio de sesión exitoso: " + usuario.getNombre());
+
+            // Guardar el ID del usuario que inició sesión
+            usuarioLogueadoId = usuario.getId_usuario();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -53,7 +59,7 @@ public class ControlInicioSesion {
         String sql = "SELECT * FROM Usuario WHERE login = ? OR correo = ?";
 
         try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
+            Connection conn = ConexionBD.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, loginOCorreo);
             stmt.setString(2, loginOCorreo);

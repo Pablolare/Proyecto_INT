@@ -1,16 +1,19 @@
 package com.javafx.ProyectoINT;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class ConexionBD {
 
-    private static ConexionBD instancia;
-    private Connection conexion;
+    private static Connection conexion;
 
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/LrVoley";
-    private static final String USUARIO = "admin";
-    private static final String PASSWORD = "rWLbek73dokz";
+    private static final String URL;
+    private static final String USUARIO;
+    private static final String PASSWORD;
 
     private ConexionBD() {
         try {
@@ -23,14 +26,30 @@ public class ConexionBD {
         }
     }
 
-    public static ConexionBD getInstancia() {
-        if (instancia == null) {
-            instancia = new ConexionBD();
+      static {
+        Properties props = new Properties();
+        try (InputStream input = ConexionBD.class.getClassLoader().getResourceAsStream("database.properties")) {
+            if (input == null) {
+                throw new IOException("No se pudo encontrar el archivo database.properties");
+            }
+            props.load(input);
+            URL = props.getProperty("db.url");
+            USUARIO = props.getProperty("db.user");
+            PASSWORD = props.getProperty("db.password");
+        } catch (IOException e) {
+            throw new RuntimeException("Error al cargar la configuración de la base de datos: " + e.getMessage(), e);
         }
-        return instancia;
     }
 
-    public Connection getConexion() {
+    public static Connection getConnection() {
+        try {
+            if (conexion == null || conexion.isClosed()) {
+                conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
+                System.out.println("Conexion realizada");
+            }
+        } catch (SQLException e) {
+            System.out.println("No se conectó con la base de datos, error: " + e.getMessage());
+        }
         return conexion;
     }
 }

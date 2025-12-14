@@ -10,35 +10,38 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.PaginaPrincipal.ControlPaginaPrincipal">
+<BorderPane stylesheets="@../styles.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.PaginaPrincipal.ControlPaginaPrincipal">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="=">
             <items>
-                <MenuItem fx:id="MenuAñadirEntreno" mnemonicParsing="false" onAction="#PagAñadirEntrno" text="Añadir Entreno" />
-                <MenuItem mnemonicParsing="false" text="Entrenos" />
-                <MenuItem mnemonicParsing="false" text="Historial" />
+               <MenuItem fx:id="MenuAñadirEntreno" mnemonicParsing="false" onAction="#PagAñadirEntreno" text="Añadir Entreno" />     
+               <MenuItem mnemonicParsing="false" text="Entrenos" />
+               <MenuItem mnemonicParsing="false" text="Historial" />
             </items>
           </Menu>
         </menus>
       </MenuBar>
    </top>
    <left>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox styleClass="sidebar" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#Perfil" text="Perfil" />
-            <Button fx:id="btnAñadirEntreno" mnemonicParsing="false" onAction="#PagAñadirEntrno" text="Añadir Entrenos" textAlignment="CENTER" />
+            <Button fx:id="btnAñadirEntreno" mnemonicParsing="false" onAction="#PagAñadirEntreno" text="Añadir Entrenos" textAlignment="CENTER" />           
             <Button fx:id="btnEntrenos" mnemonicParsing="false" onAction="#PagEntrenos" text="Entrenos" textAlignment="CENTER" />
             <Button fx:id="btnHistorial" mnemonicParsing="false" onAction="#PagHistorial" text="Historial" />
          </children>
       </VBox>
    </left>
    <right>
-      <VBox prefHeight="374.0" prefWidth="345.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="374.0" prefWidth="450.0" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="LbUltimoEntreno" lineSpacing="2.0" text="Ultimo Entreno: " />
-            <TableView fx:id="TablaUltimoEntreno" prefHeight="358.0" prefWidth="346.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="TablaUltimoEntreno" prefHeight="357.0" prefWidth="476.0" VBox.vgrow="ALWAYS">
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
                <columns>
                   <TableColumn fx:id="colIdEntreno" prefWidth="50.0" text="ID" />
                   <TableColumn fx:id="colNombreEntreno" prefWidth="150.0" text="Nombre Entreno" />

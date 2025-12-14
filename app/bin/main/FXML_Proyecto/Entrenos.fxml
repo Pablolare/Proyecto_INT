@@ -5,33 +5,34 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.Entrenos.ControlEntrenos">
+<VBox stylesheets="@../styles.css" spacing="15.0" style="-fx-padding: 20;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.Entrenos.ControlEntrenos">
    <children>
-      <Button mnemonicParsing="false" onAction="#PagAtras" text="&lt;" />
-      <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="46.0" prefWidth="600.0">
-         <children>
-            <Label text="Entrenos">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-            <Button mnemonicParsing="false" onAction="#Borrar" text="Borrar" />
-            <Button mnemonicParsing="false" onAction="#Editar" text="Editar" />
-         </children>
-      </HBox>
-      <TableView fx:id="tablaEntrenamientos" prefHeight="200.0" prefWidth="200.0">
+       <!-- Top Bar with Back and Header -->
+       <HBox alignment="CENTER_LEFT" spacing="10.0">
+          <Button styleClass="button-secondary" mnemonicParsing="false" onAction="#PagAtras" text="&lt;" />
+          <Label styleClass="header-label" text="Entrenos" />
+          <Region HBox.hgrow="ALWAYS" />
+          <Button styleClass="button-danger" mnemonicParsing="false" onAction="#Borrar" text="Borrar" />
+          <Button mnemonicParsing="false" onAction="#Editar" text="Editar" />
+       </HBox>
+
+      <TableView fx:id="tablaEntrenamientos" VBox.vgrow="ALWAYS">
          <columns>
             <TableColumn fx:id="colIdEntreno" prefWidth="50.0" text="ID" />
             <TableColumn fx:id="colNombreEntreno" prefWidth="150.0" text="Nombre Entreno" />
-            <TableColumn fx:id="colRepeticiones" prefWidth="100.0" text="Repeticiones" />
+            <TableColumn fx:id="colRepeticiones" prefWidth="100.0" text="Repet." />
             <TableColumn fx:id="colFallos" prefWidth="75.0" text="Fallos" />
             <TableColumn fx:id="colAciertos" prefWidth="75.0" text="Aciertos" />
             <TableColumn fx:id="colCompletado" prefWidth="150.0" text="Completado" />
          </columns>
       </TableView>
-      <Button mnemonicParsing="false" onAction="#AgregarEjercicio" text="Agregar Ejercicio" />
+      
+      <HBox alignment="CENTER_RIGHT">
+          <Button mnemonicParsing="false" onAction="#ListarEjercicios" text="Listar Ejercicios" />
+      </HBox>
    </children>
 </VBox>

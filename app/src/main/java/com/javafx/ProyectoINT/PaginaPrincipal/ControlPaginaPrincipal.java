@@ -1,4 +1,5 @@
 package com.javafx.ProyectoINT.PaginaPrincipal;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,9 +24,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-
 public class ControlPaginaPrincipal {
-
 
     @FXML
     private Label LbUltimoEntreno;
@@ -33,7 +32,7 @@ public class ControlPaginaPrincipal {
     @FXML
     private MenuItem MenuAñadirEntreno;
 
-   private ObservableList<Entrenamiento> listaEntrenamientos = FXCollections.observableArrayList();
+    private ObservableList<Entrenamiento> listaEntrenamientos = FXCollections.observableArrayList();
     @FXML
     private TableView<Entrenamiento> TablaUltimoEntreno;
     @FXML
@@ -71,75 +70,77 @@ public class ControlPaginaPrincipal {
     }
 
     @FXML
-    void PagAñadirEntrno(ActionEvent event) throws IOException {
+    void PagAñadirEntreno(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PagAñadirEntreno.fxml"));
         Parent root = loader.load();
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
     @FXML
-    void PagEntrenos(ActionEvent event) throws IOException{
+    void PagEntrenos(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Entrenos.fxml"));
         Parent root = loader.load();
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
     @FXML
-    void PagHistorial(ActionEvent event) throws IOException{
+    void PagHistorial(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Historial.fxml"));
         Parent root = loader.load();
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        
+        // CARGAR EL CSS AQUÍ
         Scene scene = new Scene(root);
+        String css = getClass().getResource("/styles.css").toExternalForm();
+        scene.getStylesheets().add(css);
+        
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
     }
 
     @FXML
-    void Perfil(ActionEvent event) throws IOException{
+    void Perfil(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Perfil.fxml"));
         Parent root = loader.load();
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
-     private void cargarEjerciciosDesdeBD() {
+    private void cargarEjerciciosDesdeBD() {
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
+            Connection conexion = ConexionBD.getConnection();
             String consulta = "SELECT * FROM Entrenamientos";
             PreparedStatement statment = conexion.prepareStatement(consulta);
             ResultSet resultado = statment.executeQuery();
-            
+
             listaEntrenamientos.clear();
-            
+
             while (resultado.next()) {
                 Entrenamiento entrenamiento = new Entrenamiento(
-                    resultado.getInt("id_entreno"),
-                    resultado.getInt("id_usuario"),
-                    resultado.getInt("id_ejer"),
-                    resultado.getString("nombre_entreno"),
-                    resultado.getInt("repeticiones"),
-                    resultado.getInt("fallos"),
-                    resultado.getInt("aciertos"),
-                    resultado.getBoolean("completado")
-                );
+                        resultado.getInt("id_entreno"),
+                        resultado.getInt("id_usuario"),
+                        resultado.getInt("id_ejer"),
+                        resultado.getString("nombre_entreno"),
+                        resultado.getInt("repeticiones"),
+                        resultado.getInt("fallos"),
+                        resultado.getInt("aciertos"),
+                        resultado.getBoolean("completado"));
                 listaEntrenamientos.add(entrenamiento);
             }
-            
+
             resultado.close();
             statment.close();
-            
+
         } catch (Exception e) {
             System.out.println("Error al cargar ejercicios: " + e.getMessage());
         }
     }
 }
-
-

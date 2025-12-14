@@ -9,28 +9,31 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.PagAñadirEntreno.ControlPagAñadirEntreno">
+<VBox stylesheets="@../styles.css" spacing="15.0" style="-fx-padding: 20;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.PagAñadirEntreno.ControlPagAñadirEntreno">
    <children>
-      <Button mnemonicParsing="false" onAction="#PagAtras" text="&lt;" />
-      <HBox prefHeight="42.0" prefWidth="600.0">
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
-            <Label text="Nuevo Entreno">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Label>
+            <Button styleClass="button-secondary" mnemonicParsing="false" onAction="#PagAtras" text="&lt;" />
+            <Label styleClass="header-label" text="Nuevo Entreno" />
          </children>
       </HBox>
-      <Label fx:id="nombreEntreno" text="Nombre del Entrenamiento" />
-      <TableView fx:id="tablaEjerNuevoEntreno" prefHeight="242.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
-        <columns>
-          <TableColumn fx:id="colNombreEjer" prefWidth="200.0" text="Nombre Ejercicio" />
-          <TableColumn fx:id="colTipo" prefWidth="150.0" text="Tipo" />
-          <TableColumn fx:id="colFinalidad" prefWidth="150.0" text="Finalidad" />
-        </columns>
-      </TableView>
-      <Label text="Nombre Entreno:" />
-      <TextField fx:id="txtNuevoEntreno" promptText="Escribe el nombre del entrenamiento..." />
-      <Button mnemonicParsing="false" onAction="#AgregarEjercicio" text="+ Agregar Ejercicio" />
+      
+      <VBox spacing="5.0">
+          <Label text="Nombre del Entrenamiento" styleClass="label-bold"/>
+          <TextField fx:id="txtNuevoEntreno" promptText="Escribe el nombre del entrenamiento..." />
+      </VBox>
+      
+      <VBox VBox.vgrow="ALWAYS" spacing="5.0">
+          <Label text="Ejercicios Disponibles:" styleClass="sub-header"/>
+          <TableView fx:id="tablaEjerNuevoEntreno" VBox.vgrow="ALWAYS">
+            <columns>
+              <TableColumn fx:id="colNombreEjer" prefWidth="200.0" text="Nombre Ejercicio" />
+              <TableColumn fx:id="colTipo" prefWidth="150.0" text="Tipo" />
+              <TableColumn fx:id="colFinalidad" prefWidth="150.0" text="Finalidad" />
+            </columns>
+          </TableView>
+      </VBox>
+      
+      <Button mnemonicParsing="false" onAction="#AgregarEjercicio" text="+ Agregar Ejercicio" maxWidth="Infinity" />
    </children>
 </VBox>

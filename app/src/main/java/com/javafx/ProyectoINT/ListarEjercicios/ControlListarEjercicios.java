@@ -1,12 +1,9 @@
-package com.javafx.ProyectoINT.AgregarEjercicio;
+package com.javafx.ProyectoINT.ListarEjercicios;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-import com.javafx.ProyectoINT.ConexionBD;
 import com.javafx.ProyectoINT.modelos.Ejercicios;
+import com.javafx.ProyectoINT.modelos.EjerciciosDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,8 +18,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-public class ControlAgregarEjercicio {
-    
+public class ControlListarEjercicios {
+
     private ObservableList<Ejercicios> listaEjercicios = FXCollections.observableArrayList();
     @FXML
     private TableView<Ejercicios> tablaEjercicios;
@@ -34,7 +31,7 @@ public class ControlAgregarEjercicio {
     private TableColumn<Ejercicios, String> colTipo;
     @FXML
     private TableColumn<Ejercicios, String> colFinalidad;
-    
+
     @FXML
     void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id_ejer"));
@@ -44,51 +41,52 @@ public class ControlAgregarEjercicio {
         tablaEjercicios.setItems(listaEjercicios);
         cargarEjerciciosDesdeBD();
     }
-       
+
     @FXML
-    void CrearEjercicio(ActionEvent event) throws IOException{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/CrearEjercicio.fxml"));
+    void Borrar(ActionEvent event) {
+        Ejercicios seleccionado = tablaEjercicios.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            System.out.println("Selecciona un ejercicio para borrar");
+            return;
+        }
+        EjerciciosDAO dao = new EjerciciosDAO();
+        dao.borrarEjercicio(seleccionado.getId_ejer());
+        cargarEjerciciosDesdeBD();
+    }
+
+    @FXML
+    void Editar(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/EditarEjercicios.fxml"));
         Parent root = loader.load();
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
     @FXML
-    void PagAtras(ActionEvent event) throws IOException{
+    void CrearEjercicio(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/CrearEjercicio.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    void PagAtras(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PagAñadirEntreno.fxml"));
         Parent root = loader.load();
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
     private void cargarEjerciciosDesdeBD() {
-        try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            String consulta = "SELECT * FROM Ejercicio";
-            PreparedStatement statment = conexion.prepareStatement(consulta);
-            ResultSet resultado = statment.executeQuery();
-            
-            listaEjercicios.clear();
-            
-            while (resultado.next()) {
-                Ejercicios ejercicio = new Ejercicios(
-                    resultado.getInt("id_ejer"),
-                    resultado.getString("nombre_ejer"),
-                    resultado.getString("tipo"),
-                    resultado.getString("finalidad")
-                );
-                listaEjercicios.add(ejercicio);
-            }
-            
-            resultado.close();
-            statment.close();
-            
-        } catch (Exception e) {
-            System.out.println("Error al cargar ejercicios: " + e.getMessage());
-        }
+        EjerciciosDAO dao = new EjerciciosDAO();
+        listaEjercicios.clear();
+        listaEjercicios.addAll(dao.cargarEjerciciosDesdeBD());
     }
 }

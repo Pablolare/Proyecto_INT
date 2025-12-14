@@ -4,39 +4,60 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.EditarEjercicios.ControlEditarEjercicios">
+<HBox stylesheets="@../styles.css" spacing="20.0" style="-fx-padding: 20;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.EditarEjercicios.ControlEditarEjercicios">
    <children>
-      <VBox prefHeight="400.0" prefWidth="269.0">
+      <VBox prefHeight="400.0" prefWidth="290.0" spacing="10.0" styleClass="form-container">
          <children>
-            <Label text="Editar Ejercicios">
+            <Label styleClass="header-label" text="Editar Ejercicio">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label text="Nombre:" />
-            <TextField fx:id="txNombre" />
-            <Label text="Tipo:" />
-            <TextField fx:id="txTipo" />
-            <Label text="Finalidad:" />
-            <TextArea fx:id="txFinalidad" prefHeight="78.0" prefWidth="258.0" />
-            <Button mnemonicParsing="false" onAction="#Aceptar" text="Aceptar" />
+            
+            <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" />
+            
+            <VBox spacing="5.0">
+                <Label styleClass="label-bold" text="Nombre del Ejercicio:" />
+                <TextField fx:id="txNombre" />
+            </VBox>
+            
+            <VBox spacing="5.0">
+                <Label styleClass="label-bold" text="Finalidad:" />
+                <TextField fx:id="txFinalidad" />
+            </VBox>
+            
+            <VBox spacing="5.0">
+                <Label styleClass="label-bold" text="Tipo:" />
+                <TextField fx:id="txTipo" />
+            </VBox>
+            
+            <VBox spacing="10.0" style="-fx-padding: 10 0 0 0;">
+                <Button mnemonicParsing="false" onAction="#Actualizar" text="Actualizar Datos" maxWidth="Infinity" />
+                <Button mnemonicParsing="false" onAction="#Aceptar" text="Cerrar / Aceptar" styleClass="button-secondary" maxWidth="Infinity" />
+            </VBox>
          </children>
       </VBox>
-      <VBox prefHeight="400.0" prefWidth="354.0">
+      
+      <VBox prefHeight="400.0" prefWidth="355.0" styleClass="card" spacing="10.0">
          <children>
-            <TableView fx:id="tablaEditarEjercicios" prefHeight="242.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+            <Label styleClass="sub-header" text="Todos los Ejercicios" />
+            <TableView fx:id="tablaEditarEjercicios" VBox.vgrow="ALWAYS">
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
                <columns>
-                  <TableColumn fx:id="colNombreEjer" prefWidth="118.39996492862701" text="Nombre Ejercicio" />
-                  <TableColumn fx:id="colTipo" prefWidth="93.59996795654297" text="Tipo" />
-                  <TableColumn fx:id="colFinalidad" prefWidth="128.00006103515625" text="Finalidad" />
+                 <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
+                 <TableColumn fx:id="colNombreEjer" prefWidth="150.0" text="Nombre" />
+                 <TableColumn fx:id="colTipo" prefWidth="100.0" text="Tipo" />
+                 <TableColumn fx:id="colFinalidad" prefWidth="155.0" text="Finalidad" />
                </columns>
-      </TableView>
+            </TableView>
          </children>
       </VBox>
    </children>

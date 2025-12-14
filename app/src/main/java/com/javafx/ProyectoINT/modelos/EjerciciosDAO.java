@@ -8,10 +8,10 @@ import javafx.collections.ObservableList;
 public class EjerciciosDAO {
 
     public boolean insertarEjercicio(Ejercicios ejercicio) {
-        String sql = "INSERT INTO ejercicios (nombre_ejer, tipo, finalidad) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Ejercicio (nombre_ejer, tipo, finalidad) VALUES (?, ?, ?)";
 
         try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
+            Connection conn = ConexionBD.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, ejercicio.getNombre_ejer());
@@ -29,10 +29,10 @@ public class EjerciciosDAO {
     }
 
     public boolean actualizarEjercicio(Ejercicios ejercicio) {
-        String sql = "UPDATE ejercicios SET nombre_ejer=?, tipo=?, finalidad=? WHERE id_ejer=?";
+        String sql = "UPDATE Ejercicio SET nombre_ejer=?, tipo=?, finalidad=? WHERE id_ejer=?";
 
         try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
+            Connection conn = ConexionBD.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, ejercicio.getNombre_ejer());
@@ -51,10 +51,10 @@ public class EjerciciosDAO {
     }
 
     public boolean borrarEjercicio(int id_ejer) {
-        String sql = "DELETE FROM ejercicios WHERE id_ejer=?";
+        String sql = "DELETE FROM Ejercicio WHERE id_ejer=?";
 
         try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
+            Connection conn = ConexionBD.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, id_ejer);
 
@@ -73,7 +73,7 @@ public class EjerciciosDAO {
         String sql = "SELECT * FROM Ejercicio";
 
         try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
+            Connection conn = ConexionBD.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 

@@ -48,6 +48,7 @@ public class ControlEntrenos {
         cargarEjerciciosDesdeBD();
     }
 
+
     @FXML
     void Borrar(ActionEvent event) {
         Entrenamiento seleccionado = tablaEntrenamientos.getSelectionModel().getSelectedItem();
@@ -71,8 +72,8 @@ public class ControlEntrenos {
     }
 
     @FXML
-    void AgregarEjercicio(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/AgregarEjercicio.fxml"));
+    void ListarEjercicios(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/ListarEjercicios.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);

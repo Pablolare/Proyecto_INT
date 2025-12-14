@@ -5,20 +5,32 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.PasswordField?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.InicioSesion.ControlInicioSesion">
+
+<StackPane styleClass="root" stylesheets="@../styles.css" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.InicioSesion.ControlInicioSesion">
    <children>
-      <Label text="LrVolley">
-         <font>
-            <Font size="30.0" />
-         </font>
-      </Label>
-      <Label text="Usuario o correo:" />
-      <TextField fx:id="txtUsuarioCorreo" />
-      <Label text="Contraseña:" />
-      <TextField fx:id="txtContraseña" />
-      <Button mnemonicParsing="false" onAction="#IniciarSesion" text="Iniciar Sesion" />
-      <Button mnemonicParsing="false" onAction="#Registrarse" text="Registrarse" />
+      <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" styleClass="card" spacing="15.0">
+         <children>
+            <Label styleClass="header-label" text="LrVolley" />
+            
+            <VBox spacing="5.0">
+               <Label text="Usuario o correo:" styleClass="label-bold" />
+               <TextField fx:id="txtUsuarioCorreo" promptText="Introduce tu usuario" />
+            </VBox>
+            
+            <VBox spacing="5.0">
+               <Label text="Contraseña:" styleClass="label-bold" />
+               <PasswordField fx:id="txtContraseña" promptText="Introduce tu contraseña" />
+            </VBox>
+            
+            <VBox spacing="10.0" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+               <Button mnemonicParsing="false" onAction="#IniciarSesion" text="Iniciar Sesión" maxWidth="Infinity" />
+               <Button mnemonicParsing="false" onAction="#Registrarse" text="Registrarse" styleClass="button-secondary" maxWidth="Infinity" />
+            </VBox>
+         </children>
+      </VBox>
    </children>
-</VBox>
+</StackPane>
