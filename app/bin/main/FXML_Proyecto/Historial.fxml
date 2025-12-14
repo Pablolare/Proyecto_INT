@@ -36,7 +36,7 @@
                </children>
             </HBox>
             
-            <VBox spacing="10.0" prefHeight="100">
+            <VBox spacing="10.0">
                <children>
                   <Label text="Historial Detallado" style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 0 15 0;" />
                   <TableView fx:id="tablaHistorial" prefHeight="300.0" style="-fx-background-color: #1e293b; -fx-text-fill: white;">
