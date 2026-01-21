@@ -1,0 +1,147 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="Leaf_Violet" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="270a6510-3414-4656-9342-36f6b9e7f696">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL - LrVoley"/>
+	<style name="Title" fontName="Arial" fontSize="26.0" bold="true"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18.0"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12.0" bold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12.0"/>
+	<query language="SQL"><![CDATA[SELECT 
+    e.id_entreno,
+    e.nombre_entreno,
+    e.repeticiones,
+    e.aciertos,
+    e.fallos,
+    CONCAT(u.nombre, ' ', u.apellido) AS usuario,
+    ej.nombre_ejer AS ejercicio
+FROM Entrenamientos e
+INNER JOIN Usuario u ON e.id_usuario = u.id_usuario
+INNER JOIN Ejercicio ej ON e.id_ejer = ej.id_ejer
+ORDER BY e.id_entreno]]></query>
+	<field name="id_entreno" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id_entreno"/>
+		<property name="com.jaspersoft.studio.field.label" value="id_entreno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Entrenamientos"/>
+	</field>
+	<field name="nombre_entreno" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombre_entreno"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombre_entreno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Entrenamientos"/>
+	</field>
+	<field name="repeticiones" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="repeticiones"/>
+		<property name="com.jaspersoft.studio.field.label" value="repeticiones"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Entrenamientos"/>
+	</field>
+	<field name="aciertos" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="aciertos"/>
+		<property name="com.jaspersoft.studio.field.label" value="aciertos"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Entrenamientos"/>
+	</field>
+	<field name="fallos" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="fallos"/>
+		<property name="com.jaspersoft.studio.field.label" value="fallos"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Entrenamientos"/>
+	</field>
+	<field name="usuario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="usuario"/>
+		<property name="com.jaspersoft.studio.field.label" value="usuario"/>
+	</field>
+	<field name="ejercicio" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombre_ejer"/>
+		<property name="com.jaspersoft.studio.field.label" value="ejercicio"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Ejercicio"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title height="70" splitType="Stretch">
+		<element kind="staticText" uuid="bcf29663-c4b8-483e-a197-e5f6920fd2a2" x="0" y="0" width="339" height="70" vTextAlign="Middle" style="Title">
+			<text><![CDATA[LrVoley - Entrenamientos]]></text>
+		</element>
+	</title>
+	<pageHeader splitType="Stretch"/>
+	<columnHeader height="36" splitType="Stretch">
+		<element kind="line" uuid="9d02e302-57b8-432b-babd-efb2418804ba" positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1">
+			<pen lineWidth="0.5" lineColor="#999999"/>
+		</element>
+		<element kind="staticText" uuid="c429b37a-d9b8-4f80-a982-0ca297419a69" x="0" y="19" width="70" height="15" hTextAlign="Center" style="Column header">
+			<text><![CDATA[id_entreno]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2f9a123b-f0df-4a25-ab49-4272ce465a63"/>
+		</element>
+		<element kind="staticText" uuid="b66a3755-8c64-4d47-aaff-d6da9b75e5f5" x="70" y="19" width="100" height="15" hTextAlign="Center" style="Column header">
+			<text><![CDATA[nombre_entreno]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="088a0a3f-e93d-40d1-9655-a1fe709dc695"/>
+		</element>
+		<element kind="staticText" uuid="c44a3407-189a-4d29-9a82-38b077d91eb1" x="170" y="20" width="79" height="15" hTextAlign="Center" style="Column header">
+			<text><![CDATA[repeticiones]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3c3529f1-0977-4ff8-9009-f82aff698752"/>
+		</element>
+		<element kind="staticText" uuid="7ec2ae9d-bcaf-4665-a999-202ed206d460" x="249" y="20" width="63" height="15" hTextAlign="Center" style="Column header">
+			<text><![CDATA[aciertos]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="44f3f88b-60af-4371-aa96-d1603665b0b8"/>
+		</element>
+		<element kind="staticText" uuid="4e65f900-12e4-4481-8254-9e9323b556f9" x="312" y="20" width="45" height="15" hTextAlign="Center" style="Column header">
+			<text><![CDATA[fallos]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5ba6f243-daa6-4d6d-b172-de4318c8b6c8"/>
+		</element>
+		<element kind="staticText" uuid="4acfbbb8-e19a-418b-ae48-cdf2b7e4839e" x="357" y="20" width="94" height="15" hTextAlign="Center" style="Column header">
+			<text><![CDATA[usuario]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="75c4413a-9c59-4bb6-aedc-dbd87f92d3e7"/>
+		</element>
+		<element kind="staticText" uuid="87a5626a-2560-4bd9-97e2-a4650d68082a" x="451" y="19" width="102" height="15" hTextAlign="Center" style="Column header">
+			<text><![CDATA[ejercicio]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ec8a8d23-6849-4ec6-9fbd-9a43a25a63a4"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<element kind="line" uuid="e333df44-9887-45d8-a569-1c4607976a27" positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1">
+				<pen lineWidth="0.5" lineColor="#999999"/>
+			</element>
+			<element kind="textField" uuid="c85abdfa-f516-4e12-b205-4b20ec35e1b7" x="0" y="0" width="70" height="15" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{id_entreno}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2f9a123b-f0df-4a25-ab49-4272ce465a63"/>
+			</element>
+			<element kind="textField" uuid="c458877d-4038-4da5-ac57-e38d7cef511a" x="70" y="0" width="100" height="15" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{nombre_entreno}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="088a0a3f-e93d-40d1-9655-a1fe709dc695"/>
+			</element>
+			<element kind="textField" uuid="c89083db-5df9-45c6-b0eb-a00d054518d6" x="170" y="1" width="79" height="15" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{repeticiones}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3c3529f1-0977-4ff8-9009-f82aff698752"/>
+			</element>
+			<element kind="textField" uuid="1e9316e2-08c1-4adf-ac27-7e6f84a8a373" x="249" y="1" width="63" height="15" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{aciertos}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="44f3f88b-60af-4371-aa96-d1603665b0b8"/>
+			</element>
+			<element kind="textField" uuid="79534dad-089c-40ce-a6d3-3adc350fc28e" x="312" y="1" width="45" height="15" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{fallos}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5ba6f243-daa6-4d6d-b172-de4318c8b6c8"/>
+			</element>
+			<element kind="textField" uuid="cf501e67-e326-4d95-888a-d37355798729" x="357" y="1" width="94" height="15" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{usuario}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="75c4413a-9c59-4bb6-aedc-dbd87f92d3e7"/>
+			</element>
+			<element kind="textField" uuid="2274f1c2-90e5-4138-bb92-90ab6a2904bb" x="451" y="0" width="102" height="15" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{ejercicio}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ec8a8d23-6849-4ec6-9fbd-9a43a25a63a4"/>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch">
+		<element kind="line" uuid="f4ea54fc-a4b9-4971-acd1-638c2e274a20" positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1">
+			<pen lineWidth="0.5" lineColor="#999999"/>
+		</element>
+	</columnFooter>
+	<pageFooter height="20" splitType="Stretch">
+		<element kind="textField" uuid="433509ef-2a34-4797-9cd1-684511ae022d" x="433" y="0" width="80" height="20" fontSize="10.0" bold="false" hTextAlign="Right" style="Column header">
+			<expression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></expression>
+		</element>
+		<element kind="textField" uuid="27402784-6be1-4e60-b9c7-c3664ea17454" x="513" y="0" width="40" height="20" fontSize="10.0" evaluationTime="Report" bold="false" style="Column header">
+			<expression><![CDATA[" " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="e16da2cc-f2dd-4b0a-a299-981148326ee6" x="0" y="0" width="197" height="20" fontSize="10.0" pattern="EEEEE dd MMMMM yyyy" bold="false" style="Column header">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+	</pageFooter>
+	<summary splitType="Stretch"/>
+</jasperReport>

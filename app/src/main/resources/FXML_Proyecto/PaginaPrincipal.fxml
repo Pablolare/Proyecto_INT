@@ -31,6 +31,7 @@
             <Button fx:id="btnAñadirEntreno" mnemonicParsing="false" onAction="#PagAñadirEntreno" text="Añadir Entrenos" textAlignment="CENTER" />           
             <Button fx:id="btnEntrenos" mnemonicParsing="false" onAction="#PagEntrenos" text="Entrenos" textAlignment="CENTER" />
             <Button fx:id="btnHistorial" mnemonicParsing="false" onAction="#PagHistorial" text="Historial" />
+            <Button fx:id="btnInformes" mnemonicParsing="false" onAction="#PagInformes" text="Informes" textAlignment="CENTER" />
          </children>
       </VBox>
    </left>

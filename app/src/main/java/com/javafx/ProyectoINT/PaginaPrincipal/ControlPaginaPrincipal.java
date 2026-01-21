@@ -58,6 +58,9 @@ public class ControlPaginaPrincipal {
     private Button btnHistorial;
 
     @FXML
+    private Button btnInformes;
+
+    @FXML
     void initialize() {
         colIdEntreno.setCellValueFactory(new PropertyValueFactory<>("id_entreno"));
         colNombreEntreno.setCellValueFactory(new PropertyValueFactory<>("nombre_entreno"));
@@ -93,12 +96,25 @@ public class ControlPaginaPrincipal {
     void PagHistorial(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Historial.fxml"));
         Parent root = loader.load();
-        
-        // CARGAR EL CSS AQUÍ
+
         Scene scene = new Scene(root);
         String css = getClass().getResource("/styles.css").toExternalForm();
         scene.getStylesheets().add(css);
-        
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    void PagInformes(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Informes.fxml"));
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+        String css = getClass().getResource("/styles.css").toExternalForm();
+        scene.getStylesheets().add(css);
+
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();

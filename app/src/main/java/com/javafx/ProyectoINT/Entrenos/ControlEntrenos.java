@@ -61,6 +61,7 @@ public class ControlEntrenos {
         cargarEjerciciosDesdeBD();
     }
 
+
     @FXML
     void Editar(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/EditarEntreno.fxml"));
