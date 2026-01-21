@@ -19,9 +19,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -47,13 +50,20 @@ public class ControlInformes {
     @FXML
     private Button buttonInformeE;
 
+    @FXML
+    private CheckBox checkCombo;
+
     private Connection conexion;
 
     @FXML
     void initialize() {
         System.out.println("Informes");
-        // Inicializar la conexión a la base de datos
         this.conexion = ConexionBD.getConnection();
+        
+        checkCombo.selectedProperty().addListener((observable, valorAnt, valorAct) -> {
+            mititulo.setDisable(valorAct);
+        });
+        mititulo.setDisable(true);
     }
 
     @FXML
@@ -66,29 +76,38 @@ public class ControlInformes {
         stage.show();
     }
 
-    // Método para generar el informe de Usuario
     @FXML
     void buttonInforme1(ActionEvent event) {
         Map<String, Object> parametros = new HashMap<>();
-        parametros.put("Parametro", "%" + mititulo.getText() + "%");
-        lanzaInforme("/Informes/LrVolley-Usuario.jasper", parametros);
+        if (checkCombo.isSelected()) {
+            lanzaInforme("/Informes/LrVolley-Usuario.jasper", parametros, 0);
+        } else {
+            parametros.put("Parametro", "%" + mititulo.getText() + "%");
+            lanzaInforme("/Informes/LrVolley-Usuario.jasper", parametros, 1);
+        }
     }
 
-    // Método para generar el informe de Gráfica
     @FXML
     void buttonInforme2(ActionEvent event) {
         Map<String, Object> parametros = new HashMap<>();
-        lanzaInforme("/Informes/LrVolley-Grafica.jasper", parametros);
+        if (checkCombo.isSelected()) {
+            lanzaInforme("/Informes/LrVolley-Grafica.jasper", parametros, 0);
+        } else {
+            lanzaInforme("/Informes/LrVolley-Grafica.jasper", parametros, 1);
+        }
     }
 
-    // Método para generar el informe de Entrenamientos
     @FXML
     void buttonInforme3(ActionEvent event) {
         Map<String, Object> parametros = new HashMap<>();
-        lanzaInforme("/Informes/LrVolley-Entrenamientos.jasper", parametros);
+        if (checkCombo.isSelected()) {
+            lanzaInforme("/Informes/LrVolley-Entrenamientos.jasper", parametros, 0);
+        } else {
+            parametros.put("Parametro", "%" + mititulo.getText() + "%");
+            lanzaInforme("/Informes/LrVolley-Entrenamientos.jasper", parametros, 1);
+        }
     }
 
-    // Efectos hover para el botón Atrás
     @FXML
     void onMouseEntered(MouseEvent event) {
         Button btn = (Button) event.getSource();
@@ -101,7 +120,6 @@ public class ControlInformes {
         btn.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-padding: 5 15; -fx-cursor: hand; -fx-border-color: #475569; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8;");
     }
 
-    // Efectos hover para los botones de informes
     @FXML
     void onMouseEnteredButton(MouseEvent event) {
         Button btn = (Button) event.getSource();
@@ -126,82 +144,47 @@ public class ControlInformes {
         }
     }
 
-    private void lanzaInforme(String rutaInf, Map<String, Object> param) {
-        System.out.println("=== INICIO DEBUG ===");
-        System.out.println("Directorio de trabajo actual: " + System.getProperty("user.dir"));
-        System.out.println("¿Existe carpeta Informes?: " + new File("Informes").exists());
-        System.out.println("Ruta absoluta esperada: " + new File("Informes").getAbsolutePath());
-        System.out.println("Intentando cargar: " + rutaInf);
-        
+    private void lanzaInforme(String rutaInf, Map<String, Object> param, int tipo) {
         try {
-            // Verificar que el recurso existe
-            java.io.InputStream stream = getClass().getResourceAsStream(rutaInf);
-            System.out.println("Stream: " + (stream != null ? "ENCONTRADO" : "NULL"));
-            
-            if (stream == null) {
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Archivo no encontrado");
-                alert.setContentText("No se pudo encontrar el archivo:\n" + rutaInf);
-                alert.showAndWait();
-                return;
-            }
-            
-            // Intentar cargar el JasperReport
-            JasperReport report = (JasperReport) JRLoader.loadObject(stream);
-            System.out.println("JasperReport cargado: " + (report != null ? "OK" : "NULL"));
-            
+            JasperReport report = (JasperReport) JRLoader.loadObject(getClass().getResourceAsStream(rutaInf));
             try {
-                System.out.println("Generando informe con conexión: " + this.conexion);
                 JasperPrint jasperPrint = JasperFillManager.fillReport(report, param, this.conexion);
 
                 if (!jasperPrint.getPages().isEmpty()) {
-                    
-                    // Crear carpeta para guardar PDFs si no existe
-                    File directorio = new File("Informes");
-                    if (!directorio.exists()) {
-                        directorio.mkdirs();
-                        System.out.println("✓ Carpeta Informes creada para guardar PDFs");
-                    }
-                    
-                    String nombreBase = rutaInf.substring(rutaInf.lastIndexOf('/') + 1, rutaInf.lastIndexOf('.'));
-                    
-                    String pdfOutputPath = "Informes" + File.separator + nombreBase + "informe.pdf";
+                    String pdfOutputPath = "Informes/" + rutaInf.substring(rutaInf.lastIndexOf('/')+1, rutaInf.lastIndexOf('.')) + "informe.pdf";
                     JasperExportManager.exportReportToPdfFile(jasperPrint, pdfOutputPath);
-                    System.out.println("PDF generado: " + pdfOutputPath);
 
-                    String outputHtmlFile = "Informes" + File.separator + nombreBase + "informe.html";
+                    String outputHtmlFile = "Informes/" + rutaInf.substring(rutaInf.lastIndexOf('/')+1, rutaInf.lastIndexOf('.')) + "informe.html";
                     JasperExportManager.exportReportToHtmlFile(jasperPrint, outputHtmlFile);
-                    System.out.println("HTML generado: " + outputHtmlFile);
 
-                    // Siempre mostrar incrustado
-                    wv.getEngine().load(new File(outputHtmlFile).toURI().toString());
-                    
+                    if (tipo == 0) {
+                        wv.getEngine().load(new File(outputHtmlFile).toURI().toString());
+                    } else {
+                        WebView wvnuevo = new WebView();
+                        wvnuevo.getEngine().load(new File(outputHtmlFile).toURI().toString());
+                        StackPane stackPane = new StackPane(wvnuevo);
+                        Scene scene = new Scene(stackPane, 900, 600);
+                        Stage stage = new Stage();
+                        stage.setTitle("Informe en HTML");
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setResizable(true);
+                        stage.setScene(scene);
+                        stage.show();
+                    }
                 } else {
                     Alert alert = new Alert(AlertType.INFORMATION);
                     alert.setTitle("Información");
                     alert.setHeaderText("Alerta de Informe");
-                    alert.setContentText("El informe no generó páginas (sin resultados en la consulta)");
+                    alert.setContentText("La búsqueda " + mititulo.getText() + " no generó páginas");
                     alert.showAndWait();
                 }
 
             } catch (JRException e) {
-                System.out.println("Error JasperReports al generar: " + e.getMessage());
-                e.printStackTrace();
+                System.out.println(e.getMessage());
                 JOptionPane.showMessageDialog(null, "Error al generar el informe: " + e.getMessage());
             }
         } catch (JRException ex) {
-            System.out.println("Error al cargar el informe: " + ex.getMessage());
-            ex.printStackTrace();
-            
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Error al cargar el archivo .jasper");
-            alert.setContentText("Detalles: " + ex.getMessage() + "\n\n" +
-                            "Es posible que el archivo .jasper esté corrupto o sea incompatible.\n" +
-                            "Intenta recompilar el archivo .jrxml en JasperSoft Studio.");
-            alert.showAndWait();
+            System.out.println(ex.getMessage());
         }
-        System.out.println("=== FIN DEBUG ===");
     }
 }
