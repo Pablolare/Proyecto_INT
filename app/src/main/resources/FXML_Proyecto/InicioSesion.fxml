@@ -7,6 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Tooltip?>
 
 
 
@@ -16,19 +17,35 @@
          <children>
             <Label styleClass="header-label" text="LrVolley" />
             
-            <VBox spacing="5.0">
+            <VBox spacing="8.0">
                <Label text="Usuario o correo:" styleClass="label-bold" />
-               <TextField fx:id="txtUsuarioCorreo" promptText="Introduce tu usuario" />
+               <TextField fx:id="txtUsuarioCorreo" promptText="Introduce tu usuario">
+                  <tooltip>
+                     <Tooltip text="Introduce tu nombre de usuario o correo electrónico" />
+                  </tooltip>
+               </TextField>
             </VBox>
             
-            <VBox spacing="5.0">
+            <VBox spacing="8.0">
                <Label text="Contraseña:" styleClass="label-bold" />
-               <PasswordField fx:id="txtContraseña" promptText="Introduce tu contraseña" />
+               <PasswordField fx:id="txtContraseña" promptText="Introduce tu contraseña">
+                  <tooltip>
+                     <Tooltip text="Introduce tu contraseña" />
+                  </tooltip>
+               </PasswordField>
             </VBox>
             
             <VBox spacing="10.0" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
-               <Button mnemonicParsing="false" onAction="#IniciarSesion" text="Iniciar Sesión" maxWidth="Infinity" />
-               <Button mnemonicParsing="false" onAction="#Registrarse" text="Registrarse" styleClass="button-secondary" maxWidth="Infinity" />
+               <Button mnemonicParsing="false" onAction="#IniciarSesion" text="Iniciar Sesión" maxWidth="Infinity">
+                  <tooltip>
+                     <Tooltip text="Haz clic para iniciar sesión" />
+                  </tooltip>
+               </Button>
+               <Button mnemonicParsing="false" onAction="#Registrarse" text="Registrarse" styleClass="button-secondary" maxWidth="Infinity">
+                  <tooltip>
+                     <Tooltip text="Haz clic para crear una nueva cuenta" />
+                  </tooltip>
+               </Button>
             </VBox>
          </children>
       </VBox>

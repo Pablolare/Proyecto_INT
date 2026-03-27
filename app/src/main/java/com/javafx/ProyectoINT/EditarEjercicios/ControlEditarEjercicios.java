@@ -6,6 +6,7 @@ import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 
+import com.javafx.ProyectoINT.ListarEjercicios.ControlListarEjercicios;
 import com.javafx.ProyectoINT.modelos.Ejercicios;
 import com.javafx.ProyectoINT.modelos.EjerciciosDAO;
 
@@ -17,6 +18,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -56,6 +60,7 @@ public class ControlEditarEjercicios {
         tablaEditarEjercicios.setItems(listaEjercicios);
         cargarEjerciciosDesdeBD();
         configurarValidaciones();
+
         tablaEditarEjercicios.getSelectionModel().selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
                     if (newSelection != null) {
@@ -64,6 +69,16 @@ public class ControlEditarEjercicios {
                         txFinalidad.setText(newSelection.getFinalidad());
                     }
                 });
+
+        if (ControlListarEjercicios.ejercicioSeleccionadoId >= 0) {
+            for (Ejercicios ej : listaEjercicios) {
+                if (ej.getId_ejer() == ControlListarEjercicios.ejercicioSeleccionadoId) {
+                    tablaEditarEjercicios.getSelectionModel().select(ej);
+                    break;
+                }
+            }
+            ControlListarEjercicios.ejercicioSeleccionadoId = -1;
+        }
     }
 
     private void configurarValidaciones() {
@@ -98,13 +113,16 @@ public class ControlEditarEjercicios {
     @FXML
     void Actualizar(ActionEvent event) {
         if (validationSupport.isInvalid()) {
-            System.out.println("Por favor, corrija los errores en el formulario");
             return;
         }
 
         Ejercicios seleccionado = tablaEditarEjercicios.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            System.out.println("Selecciona un ejercicio para actualizar");
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Sin selección");
+            alert.setHeaderText("Ningún ejercicio seleccionado");
+            alert.setContentText("Selecciona un ejercicio de la tabla para actualizarlo");
+            alert.showAndWait();
             return;
         }
         seleccionado.setNombre_ejer(txNombre.getText());
@@ -120,12 +138,36 @@ public class ControlEditarEjercicios {
     void Borrar(ActionEvent event) {
         Ejercicios seleccionado = tablaEditarEjercicios.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            System.out.println("Selecciona un ejercicio para borrar");
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Sin selección");
+            alert.setHeaderText("Ningún ejercicio seleccionado");
+            alert.setContentText("Selecciona un ejercicio de la tabla para borrarlo");
+            alert.showAndWait();
             return;
         }
-        EjerciciosDAO dao = new EjerciciosDAO();
-        dao.borrarEjercicio(seleccionado.getId_ejer());
-        cargarEjerciciosDesdeBD();
+
+        Alert confirmacion = new Alert(AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar borrado");
+        confirmacion.setHeaderText("Borrar ejercicio '" + seleccionado.getNombre_ejer() + "'");
+        confirmacion.setContentText("¿Estás seguro de que quieres borrar este ejercicio?");
+
+        confirmacion.showAndWait().ifPresent(respuesta -> {
+            if (respuesta == ButtonType.OK) {
+                EjerciciosDAO dao = new EjerciciosDAO();
+                if (dao.borrarEjercicio(seleccionado.getId_ejer())) {
+                    cargarEjerciciosDesdeBD();
+                    txNombre.clear();
+                    txTipo.clear();
+                    txFinalidad.clear();
+                } else {
+                    Alert error = new Alert(AlertType.ERROR);
+                    error.setTitle("Error");
+                    error.setHeaderText("Error al borrar");
+                    error.setContentText("No se pudo borrar el ejercicio");
+                    error.showAndWait();
+                }
+            }
+        });
     }
 
     @FXML
@@ -133,8 +175,11 @@ public class ControlEditarEjercicios {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/ListarEjercicios.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
@@ -149,8 +194,11 @@ public class ControlEditarEjercicios {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/ListarEjercicios.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 }

@@ -2,6 +2,7 @@ package com.javafx.ProyectoINT.Entrenos;
 
 import java.io.IOException;
 
+import com.javafx.ProyectoINT.InicioSesion.ControlInicioSesion;
 import com.javafx.ProyectoINT.modelos.Entrenamiento;
 import com.javafx.ProyectoINT.modelos.EntrenamientoDAO;
 
@@ -13,6 +14,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -20,13 +24,15 @@ import javafx.stage.Stage;
 
 public class ControlEntrenos {
 
+    public static String entrenoSeleccionado = "";
+
     private ObservableList<Entrenamiento> listaEntrenamientos = FXCollections.observableArrayList();
     @FXML
     private TableView<Entrenamiento> tablaEntrenamientos;
     @FXML
-    private TableColumn<Entrenamiento, Integer> colIdEntreno;
-    @FXML
     private TableColumn<Entrenamiento, String> colNombreEntreno;
+    @FXML
+    private TableColumn<Entrenamiento, Integer> colNumEjercicios;
     @FXML
     private TableColumn<Entrenamiento, Integer> colRepeticiones;
     @FXML
@@ -38,14 +44,14 @@ public class ControlEntrenos {
 
     @FXML
     void initialize() {
-        colIdEntreno.setCellValueFactory(new PropertyValueFactory<>("id_entreno"));
         colNombreEntreno.setCellValueFactory(new PropertyValueFactory<>("nombre_entreno"));
+        colNumEjercicios.setCellValueFactory(new PropertyValueFactory<>("numEjercicios"));
         colRepeticiones.setCellValueFactory(new PropertyValueFactory<>("repeticiones"));
         colFallos.setCellValueFactory(new PropertyValueFactory<>("fallos"));
         colAciertos.setCellValueFactory(new PropertyValueFactory<>("aciertos"));
         colCompletado.setCellValueFactory(new PropertyValueFactory<>("completado"));
         tablaEntrenamientos.setItems(listaEntrenamientos);
-        cargarEjerciciosDesdeBD();
+        cargarEntrenosDesdeBD();
     }
 
 
@@ -53,32 +59,93 @@ public class ControlEntrenos {
     void Borrar(ActionEvent event) {
         Entrenamiento seleccionado = tablaEntrenamientos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            System.out.println("Selecciona un entrenamiento para borrar");
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Sin selección");
+            alert.setHeaderText("Ningún entrenamiento seleccionado");
+            alert.setContentText("Selecciona un entrenamiento de la tabla para borrarlo");
+            alert.showAndWait();
             return;
         }
-        EntrenamientoDAO dao = new EntrenamientoDAO();
-        dao.borrarEntrenamiento(seleccionado.getId_entreno());
-        cargarEjerciciosDesdeBD();
+
+        Alert confirmacion = new Alert(AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar borrado");
+        confirmacion.setHeaderText("Borrar entrenamiento '" + seleccionado.getNombre_entreno() + "'");
+        confirmacion.setContentText("Se borrarán todos los ejercicios asociados a este entrenamiento. ¿Estás seguro?");
+
+        confirmacion.showAndWait().ifPresent(respuesta -> {
+            if (respuesta == ButtonType.OK) {
+                EntrenamientoDAO dao = new EntrenamientoDAO();
+                if (dao.borrarEntrenamientoPorNombre(seleccionado.getNombre_entreno(),
+                        ControlInicioSesion.usuarioLogueadoId)) {
+                    cargarEntrenosDesdeBD();
+                } else {
+                    Alert error = new Alert(AlertType.ERROR);
+                    error.setTitle("Error");
+                    error.setHeaderText("Error al borrar");
+                    error.setContentText("No se pudo borrar el entrenamiento");
+                    error.showAndWait();
+                }
+            }
+        });
     }
 
 
     @FXML
     void Editar(ActionEvent event) throws IOException {
+        Entrenamiento seleccionado = tablaEntrenamientos.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Sin selección");
+            alert.setHeaderText("Ningún entrenamiento seleccionado");
+            alert.setContentText("Selecciona un entrenamiento de la tabla para editarlo");
+            alert.showAndWait();
+            return;
+        }
+        entrenoSeleccionado = seleccionado.getNombre_entreno();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/EditarEntreno.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
+        stage.show();
+    }
+
+    @FXML
+    void CrearEjercicio(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/CrearEjercicio.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
     @FXML
     void ListarEjercicios(ActionEvent event) throws IOException {
+        Entrenamiento seleccionado = tablaEntrenamientos.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Sin selección");
+            alert.setHeaderText("Ningún entrenamiento seleccionado");
+            alert.setContentText("Selecciona un entrenamiento de la tabla para ver sus ejercicios");
+            alert.showAndWait();
+            return;
+        }
+        entrenoSeleccionado = seleccionado.getNombre_entreno();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/ListarEjercicios.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
@@ -87,14 +154,17 @@ public class ControlEntrenos {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
-    private void cargarEjerciciosDesdeBD() {
+    private void cargarEntrenosDesdeBD() {
         EntrenamientoDAO dao = new EntrenamientoDAO();
         listaEntrenamientos.clear();
-        listaEntrenamientos.addAll(dao.cargarEntrenamientosDesdeBD());
+        listaEntrenamientos.addAll(dao.obtenerEntrenosAgrupadosUsuario(ControlInicioSesion.usuarioLogueadoId));
     }
 }

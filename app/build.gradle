@@ -14,21 +14,11 @@ javafx {
 
 dependencies {
     implementation 'com.mysql:mysql-connector-j:8.0.33'
+    // https://mvnrepository.com/artifact/org.controlsfx/controlsfx
     implementation("org.controlsfx:controlsfx:11.2.2")
-    
-    // JasperReports - ACTUALIZAR a 7.0.3 para coincidir con JasperSoft Studio
-    implementation 'net.sf.jasperreports:jasperreports:7.0.3'
-    
-    implementation 'org.apache.commons:commons-collections4:4.4'
-    implementation 'commons-beanutils:commons-beanutils:1.9.4'
-    implementation 'commons-digester:commons-digester:2.1'
-    implementation 'commons-logging:commons-logging:1.2'
-    implementation 'net.sf.jasperreports:jasperreports-pdf:7.0.3'
-    implementation 'net.sf.jasperreports:jasperreports-fonts:7.0.3'
-    implementation 'net.sf.jasperreports:jasperreports-javascript:7.0.3'
-    implementation 'net.sf.jasperreports:jasperreports-charts:7.0.3'
-
-
+    implementation 'net.sf.jasperreports:jasperreports:7.0.1' 
+    implementation 'net.sf.jasperreports:jasperreports-pdf:7.0.0' //Exportar PDF
+    implementation 'net.sf.jasperreports:jasperreports-charts:7.0.1' //Charts
 }
 
 java {

@@ -1,70 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox stylesheets="@../styles.css" spacing="20.0" style="-fx-padding: 20;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.EditarEntreno.ControlEditarEntreno">
-   <children>
-      <VBox prefHeight="400.0" prefWidth="290.0" spacing="10.0" styleClass="form-container">
+<ScrollPane fitToWidth="true" fitToHeight="true" stylesheets="@../styles.css" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.EditarEntreno.ControlEditarEntreno">
+   <content>
+      <HBox spacing="25.0" style="-fx-padding: 25;" minHeight="500.0">
          <children>
-            <Label styleClass="header-label" text="Editar Entreno">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-            
-            <VBox spacing="5.0">
-                <Label styleClass="label-bold" text="Nombre:" />
-                <TextField fx:id="Nombre" />
+            <VBox prefHeight="400.0" prefWidth="290.0" spacing="10.0" styleClass="form-container">
+               <children>
+                  <Label styleClass="header-label" text="Editar Entreno">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+
+                  <VBox spacing="8.0">
+                      <Label styleClass="label-bold" text="Nombre:" />
+                      <TextField fx:id="Nombre">
+                         <tooltip><Tooltip text="Nombre del entrenamiento" /></tooltip>
+                      </TextField>
+                  </VBox>
+
+                  <HBox spacing="10.0">
+                      <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                          <Label styleClass="label-bold" text="Repeticiones:" />
+                          <TextField fx:id="Repeticiones">
+                             <tooltip><Tooltip text="Numero de repeticiones realizadas" /></tooltip>
+                          </TextField>
+                      </VBox>
+                      <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                          <Label styleClass="label-bold" text="Fallos:" />
+                          <TextField fx:id="Fallos">
+                             <tooltip><Tooltip text="Numero de fallos cometidos" /></tooltip>
+                          </TextField>
+                      </VBox>
+                  </HBox>
+
+                  <VBox spacing="8.0">
+                      <Label styleClass="label-bold" text="Aciertos:" />
+                      <TextField fx:id="Aciertos">
+                         <tooltip><Tooltip text="Numero de aciertos conseguidos" /></tooltip>
+                      </TextField>
+                  </VBox>
+
+                  <VBox spacing="10.0" style="-fx-padding: 10 0 0 0;">
+                      <Button mnemonicParsing="false" onAction="#Actualizar" text="Actualizar Datos" maxWidth="Infinity">
+                         <tooltip><Tooltip text="Guardar los cambios del ejercicio seleccionado" /></tooltip>
+                      </Button>
+                      <Button mnemonicParsing="false" onAction="#Aceptar" text="Cerrar / Aceptar" styleClass="button-secondary" maxWidth="Infinity">
+                         <tooltip><Tooltip text="Volver a la lista de entrenos" /></tooltip>
+                      </Button>
+                      <Button mnemonicParsing="false" onAction="#EditarEjercicios" text="Editar Ejercicios" styleClass="button-secondary" maxWidth="Infinity">
+                         <tooltip><Tooltip text="Ir a editar los ejercicios disponibles" /></tooltip>
+                      </Button>
+                  </VBox>
+               </children>
             </VBox>
-            
-            <HBox spacing="10.0">
-                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                    <Label styleClass="label-bold" text="Repeticiones:" />
-                    <TextField fx:id="Repeticiones" />
-                </VBox>
-                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                    <Label styleClass="label-bold" text="Fallos:" />
-                    <TextField fx:id="Fallos" />
-                </VBox>
-            </HBox>
-            
-            <VBox spacing="5.0">
-                <Label styleClass="label-bold" text="Aciertos:" />
-                <TextField fx:id="Aciertos" />
-            </VBox>
-            
-            <CheckBox fx:id="Completado" mnemonicParsing="false" text="Completado" styleClass="label-bold" />
-            
-            <VBox spacing="10.0" style="-fx-padding: 10 0 0 0;">
-                <Button mnemonicParsing="false" onAction="#Actualizar" text="Actualizar Datos" maxWidth="Infinity" />
-                <Button mnemonicParsing="false" onAction="#Aceptar" text="Cerrar / Aceptar" styleClass="button-secondary" maxWidth="Infinity" />
-                <Button mnemonicParsing="false" onAction="#EditarEjercicios" text="Editar Ejercicios" styleClass="button-secondary" maxWidth="Infinity"/>
+
+            <VBox prefHeight="400.0" prefWidth="355.0" styleClass="card" spacing="10.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label styleClass="sub-header" text="Ejercicios en este entreno" />
+                  <TableView fx:id="tablaEjercicios" VBox.vgrow="ALWAYS" editable="true">
+                    <columnResizePolicy>
+                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                    <columns>
+                      <TableColumn fx:id="colIdEjer" prefWidth="50.0" text="ID" />
+                      <TableColumn fx:id="colNombreEjer" prefWidth="150.0" text="Nombre Ejercicio" />
+                      <TableColumn fx:id="colTipo" prefWidth="80.0" text="Tipo" />
+                      <TableColumn fx:id="colFinalidad" prefWidth="100.0" text="Finalidad" />
+                      <TableColumn fx:id="colCompletado" prefWidth="90.0" text="Completado" />
+                    </columns>
+                  </TableView>
+               </children>
             </VBox>
          </children>
-      </VBox>
-      
-      <VBox prefHeight="400.0" prefWidth="355.0" styleClass="card" spacing="10.0">
-         <children>
-            <Label styleClass="sub-header" text="Ejercicios en este entreno" />
-            <TableView fx:id="tablaEntrenamientos" VBox.vgrow="ALWAYS">
-              <columns>
-                <TableColumn fx:id="colIdEntreno" prefWidth="50.0" text="ID" />
-                <TableColumn fx:id="colNombreEntreno" prefWidth="150.0" text="Nombre Entreno" />
-                <TableColumn fx:id="colRepeticiones" prefWidth="100.0" text="Repet." />
-                <TableColumn fx:id="colFallos" prefWidth="75.0" text="Fallos" />
-                <TableColumn fx:id="colAciertos" prefWidth="75.0" text="Aciertos" />
-                <TableColumn fx:id="colCompletado" prefWidth="100.0" text="Completado" />
-              </columns>
-            </TableView>
-         </children>
-      </VBox>
-   </children>
-</HBox>
+      </HBox>
+   </content>
+</ScrollPane>

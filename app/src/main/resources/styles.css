@@ -317,6 +317,11 @@ HBox {
     -fx-border-width: 0 1px 0 0;
 }
 
+.sidebar {
+    -fx-spacing: 6px;
+    -fx-padding: 12px 8px;
+}
+
 .sidebar .button {
     -fx-background-color: transparent;
     -fx-text-fill: -fx-text-muted;

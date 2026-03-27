@@ -11,7 +11,7 @@ public class EjerciciosDAO {
         String sql = "INSERT INTO Ejercicio (nombre_ejer, tipo, finalidad) VALUES (?, ?, ?)";
 
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getInstancia().getConexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, ejercicio.getNombre_ejer());
@@ -32,7 +32,7 @@ public class EjerciciosDAO {
         String sql = "UPDATE Ejercicio SET nombre_ejer=?, tipo=?, finalidad=? WHERE id_ejer=?";
 
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getInstancia().getConexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, ejercicio.getNombre_ejer());
@@ -54,7 +54,7 @@ public class EjerciciosDAO {
         String sql = "DELETE FROM Ejercicio WHERE id_ejer=?";
 
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getInstancia().getConexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, id_ejer);
 
@@ -68,12 +68,44 @@ public class EjerciciosDAO {
         }
     }
 
+    public ObservableList<Ejercicios> obtenerEjerciciosPorEntreno(String nombreEntreno, int idUsuario) {
+        ObservableList<Ejercicios> lista = FXCollections.observableArrayList();
+        String sql = "SELECT e.* FROM Ejercicio e " +
+                     "INNER JOIN Entrenamientos t ON e.id_ejer = t.id_ejer " +
+                     "WHERE t.nombre_entreno = ? AND t.id_usuario = ?";
+
+        try {
+            Connection conn = ConexionBD.getInstancia().getConexion();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, nombreEntreno);
+            stmt.setInt(2, idUsuario);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Ejercicios ejercicio = new Ejercicios(
+                        rs.getInt("id_ejer"),
+                        rs.getString("nombre_ejer"),
+                        rs.getString("tipo"),
+                        rs.getString("finalidad"));
+                lista.add(ejercicio);
+            }
+
+            rs.close();
+            stmt.close();
+
+        } catch (SQLException e) {
+            System.out.println("Error al obtener ejercicios por entreno: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
     public ObservableList<Ejercicios> cargarEjerciciosDesdeBD() {
         ObservableList<Ejercicios> lista = FXCollections.observableArrayList();
         String sql = "SELECT * FROM Ejercicio";
 
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getInstancia().getConexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 

@@ -2,13 +2,17 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox stylesheets="@../styles.css" styleClass="form-container" alignment="CENTER" spacing="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.Registrar.ControlRegistrar">
+<ScrollPane fitToWidth="true" fitToHeight="true" stylesheets="@../styles.css" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.Registrar.ControlRegistrar">
+   <content>
+      <VBox styleClass="form-container" alignment="CENTER" spacing="14.0" minHeight="500.0">
    <children>
       <Label styleClass="header-label" text="LrVolley">
          <font>
@@ -17,45 +21,63 @@
       </Label>
       <HBox alignment="CENTER" spacing="10.0" prefHeight="50.0" prefWidth="600.0">
          <children>
-            <VBox prefHeight="100.0" prefWidth="240.0" spacing="5.0">
+            <VBox prefHeight="100.0" prefWidth="240.0" spacing="8.0">
                <children>
                   <Label styleClass="label-bold" text="Nombre de Usuario:" />
-                  <TextField fx:id="txtNombreUsuario" />
+                  <TextField fx:id="txtNombreUsuario">
+                     <tooltip><Tooltip text="Introduce tu nombre de usuario" /></tooltip>
+                  </TextField>
                </children>
             </VBox>
-            <VBox prefHeight="100.0" prefWidth="240.0" spacing="5.0">
+            <VBox prefHeight="100.0" prefWidth="240.0" spacing="8.0">
                <children>
                   <Label styleClass="label-bold" text="Apellidos:" />
-                  <TextField fx:id="txtApellidos" />
+                  <TextField fx:id="txtApellidos">
+                     <tooltip><Tooltip text="Introduce tus apellidos" /></tooltip>
+                  </TextField>
                </children>
             </VBox>
          </children>
       </HBox>
-      <VBox maxWidth="500.0" spacing="5.0">
+      <VBox maxWidth="500.0" spacing="8.0">
          <children>
             <Label styleClass="label-bold" text="Correo:" />
-            <TextField fx:id="txtCorreo" />
+            <TextField fx:id="txtCorreo">
+               <tooltip><Tooltip text="Introduce tu correo electronico" /></tooltip>
+            </TextField>
          </children>
       </VBox>
-      <VBox maxWidth="500.0" spacing="5.0">
+      <VBox maxWidth="500.0" spacing="8.0">
          <children>
             <Label styleClass="label-bold" text="Rol:" />
-            <TextField fx:id="txtRol" />
+            <TextField fx:id="txtRol">
+               <tooltip><Tooltip text="Introduce tu rol (jugador, entrenador, etc.)" /></tooltip>
+            </TextField>
          </children>
       </VBox>
-      <VBox maxWidth="500.0" spacing="5.0">
+      <VBox maxWidth="500.0" spacing="8.0">
          <children>
             <Text styleClass="label-bold" strokeType="OUTSIDE" strokeWidth="0.0" text="Contraseña:" />
-            <TextField fx:id="txtContraseña" />
+            <TextField fx:id="txtContraseña">
+               <tooltip><Tooltip text="Introduce tu contraseña" /></tooltip>
+            </TextField>
          </children>
       </VBox>
-      <VBox maxWidth="500.0" spacing="5.0">
+      <VBox maxWidth="500.0" spacing="8.0">
          <children>
             <Label styleClass="label-bold" text="Confirmar contraseña:" />
-            <TextField fx:id="txtConfirmarContraseña" />
+            <TextField fx:id="txtConfirmarContraseña">
+               <tooltip><Tooltip text="Repite la contraseña para confirmarla" /></tooltip>
+            </TextField>
          </children>
       </VBox>
-      <Label styleClass="sub-header" onMouseClicked="#InicioSesion" text="Tengo una cuenta creada" style="-fx-cursor: hand; -fx-underline: true;" />
-      <Button mnemonicParsing="false" onAction="#CrearCuenta" text="Crear Cuenta" maxWidth="200.0" />
+      <VBox spacing="12.0" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+         <Button mnemonicParsing="false" onAction="#CrearCuenta" text="Crear Cuenta" maxWidth="200.0">
+            <tooltip><Tooltip text="Registrar una nueva cuenta" /></tooltip>
+         </Button>
+         <Label styleClass="sub-header" onMouseClicked="#InicioSesion" text="Tengo una cuenta creada" style="-fx-cursor: hand; -fx-underline: true;" />
+      </VBox>
    </children>
 </VBox>
+   </content>
+</ScrollPane>

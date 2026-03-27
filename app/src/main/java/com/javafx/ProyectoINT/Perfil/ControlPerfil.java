@@ -18,6 +18,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -73,13 +75,17 @@ public class ControlPerfil {
         int idUsuario = ControlInicioSesion.usuarioLogueadoId;
 
         if (idUsuario == -1) {
-            System.out.println("No hay usuario logueado");
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Advertencia");
+            alert.setHeaderText("No hay usuario logueado");
+            alert.setContentText("Por favor inicia sesión primero");
+            alert.showAndWait();
             return;
         }
 
         // Buscar el usuario en la base de datos
         try {
-            Connection conexion = ConexionBD.getConnection();
+            Connection conexion = ConexionBD.getInstancia().getConexion();
             String consulta = "SELECT * FROM Usuario WHERE id_usuario = ?";
             PreparedStatement statement = conexion.prepareStatement(consulta);
             statement.setInt(1, idUsuario);
@@ -95,7 +101,11 @@ public class ControlPerfil {
             resultado.close();
             statement.close();
         } catch (Exception e) {
-            System.out.println("Error al cargar datos del usuario: " + e.getMessage());
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error al cargar datos");
+            alert.setContentText("Error al cargar datos del usuario: " + e.getMessage());
+            alert.showAndWait();
         }
     }
 
@@ -104,14 +114,18 @@ public class ControlPerfil {
         int idUsuario = ControlInicioSesion.usuarioLogueadoId;
 
         if (idUsuario == -1) {
-            System.out.println("No hay usuario en sesión");
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Advertencia");
+            alert.setHeaderText("No hay usuario en sesión");
+            alert.setContentText("Por favor inicia sesión primero");
+            alert.showAndWait();
             return;
         }
 
         // Crear objeto Usuario con los datos actualizados
         // Primero necesitamos obtener el login y contraseña actuales de la BD
         try {
-            Connection conexion = ConexionBD.getConnection();
+            Connection conexion = ConexionBD.getInstancia().getConexion();
             String consulta = "SELECT login, contraseña FROM Usuario WHERE id_usuario = ?";
             PreparedStatement statement = conexion.prepareStatement(consulta);
             statement.setInt(1, idUsuario);
@@ -134,30 +148,45 @@ public class ControlPerfil {
                 // Guardar cambios en la base de datos
                 UsuarioDAO usuarioDAO = new UsuarioDAO();
                 if (usuarioDAO.actualizarUsuario(usuarioActualizado)) {
-                    System.out.println("Perfil actualizado exitosamente");
+                    Alert alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Éxito");
+                    alert.setHeaderText("Perfil actualizado");
+                    alert.setContentText("Tu perfil ha sido actualizado exitosamente");
+                    alert.showAndWait();
                 } else {
-                    System.out.println("Error al actualizar el perfil");
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error al actualizar");
+                    alert.setContentText("No se pudo actualizar el perfil");
+                    alert.showAndWait();
                 }
             }
 
             resultado.close();
             statement.close();
         } catch (Exception e) {
-            System.out.println("Error al actualizar perfil: " + e.getMessage());
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error al actualizar perfil");
+            alert.setContentText("Error al actualizar perfil: " + e.getMessage());
+            alert.showAndWait();
         }
 
         // Volver a la página principal
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
     private void cargarUsuariosDesdeBD() {
         try {
-            Connection conexion = ConexionBD.getConnection();
+            Connection conexion = ConexionBD.getInstancia().getConexion();
             String consulta = "SELECT * FROM Usuario";
             PreparedStatement statment = conexion.prepareStatement(consulta);
             ResultSet resultado = statment.executeQuery();
@@ -180,7 +209,11 @@ public class ControlPerfil {
             statment.close();
 
         } catch (Exception e) {
-            System.out.println("Error al cargar usuarios: " + e.getMessage());
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error al cargar usuarios");
+            alert.setContentText("Error al cargar usuarios: " + e.getMessage());
+            alert.showAndWait();
         }
     }
 
@@ -189,22 +222,38 @@ public class ControlPerfil {
         Usuario seleccionado = tablaPerfil.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            System.out.println("Por favor selecciona un usuario para borrar");
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Advertencia");
+            alert.setHeaderText("No hay selección");
+            alert.setContentText("Por favor selecciona un usuario para borrar");
+            alert.showAndWait();
             return;
         }
 
         UsuarioDAO usuarioDAO = new UsuarioDAO();
 
         if (usuarioDAO.borrarUsuario(seleccionado.getId_usuario())) {
-            System.out.println("Usuario eliminado exitosamente");
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Éxito");
+            alert.setHeaderText("Usuario eliminado");
+            alert.setContentText("El usuario ha sido eliminado exitosamente");
+            alert.showAndWait();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/InicioSesion.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            boolean maximizado = stage.isMaximized();
+            double w = stage.getWidth(), h = stage.getHeight();
+            double x = stage.getX(), y = stage.getY();
+            stage.setScene(new Scene(root));
+            if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
             stage.show();
         } else {
-            System.out.println("No se pudo eliminar el usuario");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error al eliminar");
+            alert.setContentText("No se pudo eliminar el usuario");
+            alert.showAndWait();
         }
     }
 
@@ -216,8 +265,11 @@ public class ControlPerfil {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/InicioSesion.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
@@ -226,8 +278,11 @@ public class ControlPerfil {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 

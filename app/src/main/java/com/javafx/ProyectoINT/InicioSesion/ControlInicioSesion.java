@@ -11,6 +11,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -33,25 +35,33 @@ public class ControlInicioSesion {
         String contraseña = txtContraseña.getText();
 
         if (loginOCorreo.isEmpty() || contraseña.isEmpty()) {
-            System.out.println("Por favor completa todos los campos");
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Campos vacíos");
+            alert.setHeaderText("Faltan datos");
+            alert.setContentText("Por favor completa todos los campos");
+            alert.showAndWait();
             return;
         }
 
         Usuario usuario = buscarUsuario(loginOCorreo);
 
         if (usuario != null && usuario.getContraseña().equals(contraseña)) {
-            System.out.println("Inicio de sesión exitoso: " + usuario.getNombre());
-
-            // Guardar el ID del usuario que inició sesión
             usuarioLogueadoId = usuario.getId_usuario();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            boolean maximizado = stage.isMaximized();
+            double w = stage.getWidth(), h = stage.getHeight();
+            double x = stage.getX(), y = stage.getY();
+            stage.setScene(new Scene(root));
+            if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
             stage.show();
         } else {
-            System.out.println("Usuario o contraseña incorrectos");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error de inicio de sesión");
+            alert.setHeaderText("Credenciales incorrectas");
+            alert.setContentText("Usuario o contraseña incorrectos");
+            alert.showAndWait();
         }
     }
 
@@ -59,7 +69,7 @@ public class ControlInicioSesion {
         String sql = "SELECT * FROM Usuario WHERE login = ? OR correo = ?";
 
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getInstancia().getConexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, loginOCorreo);
             stmt.setString(2, loginOCorreo);
@@ -95,8 +105,11 @@ public class ControlInicioSesion {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Registrar.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 }

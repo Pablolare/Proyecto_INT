@@ -3,6 +3,7 @@ package com.javafx.ProyectoINT.Historial;
 import java.io.IOException;
 import java.util.List;
 
+import com.javafx.ProyectoINT.InicioSesion.ControlInicioSesion;
 import com.javafx.ProyectoINT.modelos.Entrenamiento;
 import com.javafx.ProyectoINT.modelos.EntrenamientoDAO;
 import com.javafx.ProyectoINT.modelos.EntrenamientoDAO.DatosProgresion;
@@ -109,7 +110,7 @@ public class ControlHistorial {
         lineChart.setCreateSymbols(true);
         lineChart.setLegendVisible(true);
         
-        idUsuarioActual = 1;
+        idUsuarioActual = ControlInicioSesion.usuarioLogueadoId;
         cargarDatosCompletos();
     }
     public void setUsuario(int idUsuario) {
@@ -217,8 +218,11 @@ public class ControlHistorial {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 }

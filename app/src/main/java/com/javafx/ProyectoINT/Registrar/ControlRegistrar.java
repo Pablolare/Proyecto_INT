@@ -11,6 +11,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -54,30 +56,54 @@ public class ControlRegistrar {
 
         // Validar que los campos no estén vacíos
         if (nombre == null || nombre.trim().isEmpty()) {
-            System.out.println("El nombre no puede estar vacío");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error de validación");
+            alert.setHeaderText("Campo vacío");
+            alert.setContentText("El nombre no puede estar vacío");
+            alert.showAndWait();
             return;
         }
         if (apellido == null || apellido.trim().isEmpty()) {
-            System.out.println("El apellido no puede estar vacío");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error de validación");
+            alert.setHeaderText("Campo vacío");
+            alert.setContentText("El apellido no puede estar vacío");
+            alert.showAndWait();
             return;
         }
         if (contraseña == null || contraseña.trim().isEmpty()) {
-            System.out.println("La contraseña no puede estar vacía");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error de validación");
+            alert.setHeaderText("Campo vacío");
+            alert.setContentText("La contraseña no puede estar vacía");
+            alert.showAndWait();
             return;
         }
         if (correo == null || correo.trim().isEmpty()) {
-            System.out.println("El correo no puede estar vacío");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error de validación");
+            alert.setHeaderText("Campo vacío");
+            alert.setContentText("El correo no puede estar vacío");
+            alert.showAndWait();
             return;
         }
         if (rol == null || rol.trim().isEmpty()) {
-            System.out.println("El rol no puede estar vacío");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error de validación");
+            alert.setHeaderText("Campo vacío");
+            alert.setContentText("El rol no puede estar vacío");
+            alert.showAndWait();
             return;
         }
 
         String login = generarLogin(nombre, apellido);
 
         if (!contraseña.equals(confirmarContraseña)) {
-            System.out.println("Las contraseñas no coinciden");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error de validación");
+            alert.setHeaderText("Contraseñas no coinciden");
+            alert.setContentText("Las contraseñas no coinciden");
+            alert.showAndWait();
             return;
         }
 
@@ -86,15 +112,27 @@ public class ControlRegistrar {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
 
         if (usuarioDAO.insertarUsuario(usuario)) {
-            System.out.println("Usuario registrado exitosamente: " + nombre);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Éxito");
+            alert.setHeaderText("Registro exitoso");
+            alert.setContentText("Usuario registrado exitosamente: " + nombre);
+            alert.showAndWait();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/InicioSesion.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            boolean maximizado = stage.isMaximized();
+            double w = stage.getWidth(), h = stage.getHeight();
+            double x = stage.getX(), y = stage.getY();
+            stage.setScene(new Scene(root));
+            if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
             stage.show();
         } else {
-            System.out.println("No se pudo registrar el usuario");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error al registrar");
+            alert.setContentText("No se pudo registrar el usuario");
+            alert.showAndWait();
         }
     }
 
@@ -108,8 +146,11 @@ public class ControlRegistrar {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/InicioSesion.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 }

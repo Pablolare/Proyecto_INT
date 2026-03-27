@@ -11,7 +11,7 @@ public class UsuarioDAO {
         String sql = "INSERT INTO Usuario (nombre, apellido, login, contraseña, rol, correo) VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getInstancia().getConexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, usuario.getNombre());
@@ -35,7 +35,7 @@ public class UsuarioDAO {
         String sql = "UPDATE Usuario SET nombre=?, apellido=?, login=?, contraseña=?, rol=?, correo=? WHERE id_usuario=?";
 
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getInstancia().getConexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, usuario.getNombre());
@@ -60,7 +60,7 @@ public class UsuarioDAO {
         String sql = "DELETE FROM Usuario WHERE id_usuario=?";
 
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getInstancia().getConexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, id_usuario);
 
@@ -79,7 +79,7 @@ public class UsuarioDAO {
         String sql = "SELECT * FROM Usuario";
 
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getInstancia().getConexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 

@@ -9,6 +9,8 @@ import org.controlsfx.validation.Validator;
 import com.javafx.ProyectoINT.modelos.Ejercicios;
 import com.javafx.ProyectoINT.modelos.EjerciciosDAO;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +18,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 public class ControlCrearEjercicio {
@@ -33,11 +38,39 @@ public class ControlCrearEjercicio {
     @FXML
     private TextField txtTipo;
 
+    @FXML
+    private TableView<Ejercicios> tablaEjercicios;
+
+    @FXML
+    private TableColumn<Ejercicios, String> colNombre;
+
+    @FXML
+    private TableColumn<Ejercicios, String> colTipo;
+
+    @FXML
+    private TableColumn<Ejercicios, String> colFinalidad;
+
+    private ObservableList<Ejercicios> listaEjercicios = FXCollections.observableArrayList();
     private ValidationSupport validationSupport;
 
     @FXML
     void initialize() {
         configurarValidaciones();
+        configurarTabla();
+        cargarEjercicios();
+    }
+
+    private void configurarTabla() {
+        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre_ejer"));
+        colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        colFinalidad.setCellValueFactory(new PropertyValueFactory<>("finalidad"));
+        tablaEjercicios.setItems(listaEjercicios);
+    }
+
+    private void cargarEjercicios() {
+        EjerciciosDAO dao = new EjerciciosDAO();
+        listaEjercicios.clear();
+        listaEjercicios.addAll(dao.cargarEjerciciosDesdeBD());
     }
 
     private void configurarValidaciones() {
@@ -70,7 +103,7 @@ public class ControlCrearEjercicio {
     }
 
     @FXML
-    void Creacion(ActionEvent event) throws IOException {
+    void Creacion(ActionEvent event) {
         if (validationSupport.isInvalid()) {
             System.out.println("Por favor, corrija los errores en el formulario antes de guardar");
             return;
@@ -80,21 +113,25 @@ public class ControlCrearEjercicio {
         EjerciciosDAO dao = new EjerciciosDAO();
         dao.insertarEjercicio(ejercicio);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/ListarEjercicios.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        // Actualizar la tabla
+        cargarEjercicios();
+
+        // Limpiar campos
+        txtNombreEjercicio.clear();
+        txtTipo.clear();
+        txtFinalidad.clear();
     }
 
     @FXML
-    void PagAtras(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/ListarEjercicios.fxml"));
+    void Cerrar(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Entrenos.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 }

@@ -10,6 +10,7 @@ public class Entrenamiento {
     private int fallos;
     private int aciertos;
     private boolean completado;
+    private int numEjercicios;
 
     public Entrenamiento(int id_entreno, int id_usuario, int id_ejer, String nombre_entreno, int repeticiones,
             int fallos, int aciertos, boolean completado) {
@@ -97,6 +98,14 @@ public class Entrenamiento {
 
     public void setCompletado(boolean completado) {
         this.completado = completado;
+    }
+
+    public int getNumEjercicios() {
+        return numEjercicios;
+    }
+
+    public void setNumEjercicios(int numEjercicios) {
+        this.numEjercicios = numEjercicios;
     }
 
 }

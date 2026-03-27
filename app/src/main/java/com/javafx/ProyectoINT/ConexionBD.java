@@ -9,24 +9,14 @@ import java.util.Properties;
 
 public class ConexionBD {
 
-    private static Connection conexion;
+    private static ConexionBD instancia;
+    private Connection conexion;
 
     private static final String URL;
     private static final String USUARIO;
     private static final String PASSWORD;
 
-    private ConexionBD() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            this.conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
-            System.out.println("Conexión exitosa a LrVoley");
-
-        } catch (Exception e) {
-            System.out.println(" Error de conexión: " + e.getMessage());
-        }
-    }
-
-      static {
+    static {
         Properties props = new Properties();
         try (InputStream input = ConexionBD.class.getClassLoader().getResourceAsStream("database.properties")) {
             if (input == null) {
@@ -41,11 +31,28 @@ public class ConexionBD {
         }
     }
 
-    public static Connection getConnection() {
+    private ConexionBD() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            this.conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
+            System.out.println("Conexión exitosa a LrVoley");
+        } catch (Exception e) {
+            System.out.println("Error de conexión: " + e.getMessage());
+        }
+    }
+
+    public static ConexionBD getInstancia() {
+        if (instancia == null) {
+            instancia = new ConexionBD();
+        }
+        return instancia;
+    }
+
+    public Connection getConexion() {
         try {
             if (conexion == null || conexion.isClosed()) {
                 conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
-                System.out.println("Conexion realizada");
+                System.out.println("Conexión realizada");
             }
         } catch (SQLException e) {
             System.out.println("No se conectó con la base de datos, error: " + e.getMessage());

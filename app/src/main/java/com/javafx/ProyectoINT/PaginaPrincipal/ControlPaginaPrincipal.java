@@ -1,12 +1,10 @@
 package com.javafx.ProyectoINT.PaginaPrincipal;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-import com.javafx.ProyectoINT.ConexionBD;
+import com.javafx.ProyectoINT.InicioSesion.ControlInicioSesion;
 import com.javafx.ProyectoINT.modelos.Entrenamiento;
+import com.javafx.ProyectoINT.modelos.EntrenamientoDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +16,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -29,16 +26,13 @@ public class ControlPaginaPrincipal {
     @FXML
     private Label LbUltimoEntreno;
 
-    @FXML
-    private MenuItem MenuAñadirEntreno;
-
     private ObservableList<Entrenamiento> listaEntrenamientos = FXCollections.observableArrayList();
     @FXML
     private TableView<Entrenamiento> TablaUltimoEntreno;
     @FXML
-    private TableColumn<Entrenamiento, Integer> colIdEntreno;
-    @FXML
     private TableColumn<Entrenamiento, String> colNombreEntreno;
+    @FXML
+    private TableColumn<Entrenamiento, Integer> colNumEjercicios;
     @FXML
     private TableColumn<Entrenamiento, Integer> colRepeticiones;
     @FXML
@@ -62,8 +56,8 @@ public class ControlPaginaPrincipal {
 
     @FXML
     void initialize() {
-        colIdEntreno.setCellValueFactory(new PropertyValueFactory<>("id_entreno"));
         colNombreEntreno.setCellValueFactory(new PropertyValueFactory<>("nombre_entreno"));
+        colNumEjercicios.setCellValueFactory(new PropertyValueFactory<>("numEjercicios"));
         colRepeticiones.setCellValueFactory(new PropertyValueFactory<>("repeticiones"));
         colFallos.setCellValueFactory(new PropertyValueFactory<>("fallos"));
         colAciertos.setCellValueFactory(new PropertyValueFactory<>("aciertos"));
@@ -77,8 +71,11 @@ public class ControlPaginaPrincipal {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PagAñadirEntreno.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
@@ -87,8 +84,11 @@ public class ControlPaginaPrincipal {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Entrenos.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
@@ -96,13 +96,12 @@ public class ControlPaginaPrincipal {
     void PagHistorial(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Historial.fxml"));
         Parent root = loader.load();
-
-        Scene scene = new Scene(root);
-        String css = getClass().getResource("/styles.css").toExternalForm();
-        scene.getStylesheets().add(css);
-
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
@@ -110,13 +109,12 @@ public class ControlPaginaPrincipal {
     void PagInformes(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Informes.fxml"));
         Parent root = loader.load();
-
-        Scene scene = new Scene(root);
-        String css = getClass().getResource("/styles.css").toExternalForm();
-        scene.getStylesheets().add(css);
-
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
@@ -125,38 +123,17 @@ public class ControlPaginaPrincipal {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Perfil.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
     private void cargarEjerciciosDesdeBD() {
-        try {
-            Connection conexion = ConexionBD.getConnection();
-            String consulta = "SELECT * FROM Entrenamientos";
-            PreparedStatement statment = conexion.prepareStatement(consulta);
-            ResultSet resultado = statment.executeQuery();
-
-            listaEntrenamientos.clear();
-
-            while (resultado.next()) {
-                Entrenamiento entrenamiento = new Entrenamiento(
-                        resultado.getInt("id_entreno"),
-                        resultado.getInt("id_usuario"),
-                        resultado.getInt("id_ejer"),
-                        resultado.getString("nombre_entreno"),
-                        resultado.getInt("repeticiones"),
-                        resultado.getInt("fallos"),
-                        resultado.getInt("aciertos"),
-                        resultado.getBoolean("completado"));
-                listaEntrenamientos.add(entrenamiento);
-            }
-
-            resultado.close();
-            statment.close();
-
-        } catch (Exception e) {
-            System.out.println("Error al cargar ejercicios: " + e.getMessage());
-        }
+        EntrenamientoDAO dao = new EntrenamientoDAO();
+        listaEntrenamientos.clear();
+        listaEntrenamientos.addAll(dao.obtenerEntrenosAgrupadosUsuario(ControlInicioSesion.usuarioLogueadoId));
     }
 }

@@ -5,12 +5,16 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox stylesheets="@../styles.css" spacing="20.0" style="-fx-padding: 20;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.EditarEjercicios.ControlEditarEjercicios">
+<ScrollPane fitToWidth="true" fitToHeight="true" stylesheets="@../styles.css" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.ProyectoINT.EditarEjercicios.ControlEditarEjercicios">
+   <content>
+      <HBox spacing="25.0" style="-fx-padding: 25;" minHeight="500.0">
    <children>
       <VBox prefHeight="400.0" prefWidth="290.0" spacing="10.0" styleClass="form-container">
          <children>
@@ -19,31 +23,44 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            
+
             <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" />
-            
-            <VBox spacing="5.0">
+
+            <VBox spacing="8.0">
                 <Label styleClass="label-bold" text="Nombre del Ejercicio:" />
-                <TextField fx:id="txNombre" />
+                <TextField fx:id="txNombre">
+                   <tooltip><Tooltip text="Nombre identificativo del ejercicio" /></tooltip>
+                </TextField>
             </VBox>
-            
-            <VBox spacing="5.0">
+
+            <VBox spacing="8.0">
                 <Label styleClass="label-bold" text="Finalidad:" />
-                <TextField fx:id="txFinalidad" />
+                <TextField fx:id="txFinalidad">
+                   <tooltip><Tooltip text="Objetivo o finalidad del ejercicio" /></tooltip>
+                </TextField>
             </VBox>
-            
-            <VBox spacing="5.0">
+
+            <VBox spacing="8.0">
                 <Label styleClass="label-bold" text="Tipo:" />
-                <TextField fx:id="txTipo" />
+                <TextField fx:id="txTipo">
+                   <tooltip><Tooltip text="Tipo de ejercicio (ataque, defensa, saque, etc.)" /></tooltip>
+                </TextField>
             </VBox>
-            
+
             <VBox spacing="10.0" style="-fx-padding: 10 0 0 0;">
-                <Button mnemonicParsing="false" onAction="#Actualizar" text="Actualizar Datos" maxWidth="Infinity" />
-                <Button mnemonicParsing="false" onAction="#Aceptar" text="Cerrar / Aceptar" styleClass="button-secondary" maxWidth="Infinity" />
+                <Button mnemonicParsing="false" onAction="#Actualizar" text="Actualizar Datos" maxWidth="Infinity">
+                   <tooltip><Tooltip text="Guardar los cambios del ejercicio seleccionado" /></tooltip>
+                </Button>
+                <Button styleClass="button-danger" mnemonicParsing="false" onAction="#Borrar" text="Borrar Ejercicio" maxWidth="Infinity">
+                   <tooltip><Tooltip text="Borrar el ejercicio seleccionado" /></tooltip>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#Aceptar" text="Cerrar / Aceptar" styleClass="button-secondary" maxWidth="Infinity">
+                   <tooltip><Tooltip text="Volver a la pagina anterior" /></tooltip>
+                </Button>
             </VBox>
          </children>
       </VBox>
-      
+
       <VBox prefHeight="400.0" prefWidth="355.0" styleClass="card" spacing="10.0">
          <children>
             <Label styleClass="sub-header" text="Todos los Ejercicios" />
@@ -62,3 +79,5 @@
       </VBox>
    </children>
 </HBox>
+   </content>
+</ScrollPane>

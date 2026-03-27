@@ -2,6 +2,7 @@ package com.javafx.ProyectoINT.Informes;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,8 +59,8 @@ public class ControlInformes {
     @FXML
     void initialize() {
         System.out.println("Informes");
-        this.conexion = ConexionBD.getConnection();
-        
+        this.conexion = ConexionBD.getInstancia().getConexion();
+
         checkCombo.selectedProperty().addListener((observable, valorAnt, valorAct) -> {
             mititulo.setDisable(valorAct);
         });
@@ -70,9 +71,12 @@ public class ControlInformes {
     void PagAtras(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
         Parent root = loader.load();
-        Scene scene = new Scene(root);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
         stage.show();
     }
 
@@ -111,24 +115,29 @@ public class ControlInformes {
     @FXML
     void onMouseEntered(MouseEvent event) {
         Button btn = (Button) event.getSource();
-        btn.setStyle("-fx-background-color: #334155; -fx-text-fill: white; -fx-font-size: 24px; -fx-padding: 5 15; -fx-cursor: hand; -fx-border-color: #64748b; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8;");
+        btn.setStyle(
+                "-fx-background-color: #334155; -fx-text-fill: white; -fx-font-size: 24px; -fx-padding: 5 15; -fx-cursor: hand; -fx-border-color: #64748b; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8;");
     }
 
     @FXML
     void onMouseExited(MouseEvent event) {
         Button btn = (Button) event.getSource();
-        btn.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-padding: 5 15; -fx-cursor: hand; -fx-border-color: #475569; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8;");
+        btn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-padding: 5 15; -fx-cursor: hand; -fx-border-color: #475569; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8;");
     }
 
     @FXML
     void onMouseEnteredButton(MouseEvent event) {
         Button btn = (Button) event.getSource();
         if (btn == buttonInformeN) {
-            btn.setStyle("-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
+            btn.setStyle(
+                    "-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
         } else if (btn == buttonInformeG) {
-            btn.setStyle("-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
+            btn.setStyle(
+                    "-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
         } else if (btn == buttonInformeE) {
-            btn.setStyle("-fx-background-color: #059669; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
+            btn.setStyle(
+                    "-fx-background-color: #059669; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
         }
     }
 
@@ -136,11 +145,32 @@ public class ControlInformes {
     void onMouseExitedButton(MouseEvent event) {
         Button btn = (Button) event.getSource();
         if (btn == buttonInformeN) {
-            btn.setStyle("-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
+            btn.setStyle(
+                    "-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
         } else if (btn == buttonInformeG) {
-            btn.setStyle("-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
+            btn.setStyle(
+                    "-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
         } else if (btn == buttonInformeE) {
-            btn.setStyle("-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
+            btn.setStyle(
+                    "-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-weight: bold;");
+        }
+    }
+
+    private String getAppBasePath() {
+        try {
+            // Obtener la ubicación del JAR o del directorio de clases
+            java.net.URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
+            File file = new File(location.toURI());
+
+            // Si es un JAR, devolver el directorio padre
+            if (file.isFile()) {
+                return file.getParentFile().getAbsolutePath();
+            }
+            // Si es un directorio (en desarrollo), devolver el directorio del proyecto
+            return file.getAbsolutePath();
+        } catch (Exception e) {
+            // Fallback: usar el directorio de trabajo actual
+            return System.getProperty("user.dir");
         }
     }
 
@@ -151,11 +181,32 @@ public class ControlInformes {
                 JasperPrint jasperPrint = JasperFillManager.fillReport(report, param, this.conexion);
 
                 if (!jasperPrint.getPages().isEmpty()) {
-                    String pdfOutputPath = "Informes/" + rutaInf.substring(rutaInf.lastIndexOf('/')+1, rutaInf.lastIndexOf('.')) + "informe.pdf";
-                    JasperExportManager.exportReportToPdfFile(jasperPrint, pdfOutputPath);
+                    String basePath = getAppBasePath();
+                    System.out.println("Base path: " + basePath);
 
-                    String outputHtmlFile = "Informes/" + rutaInf.substring(rutaInf.lastIndexOf('/')+1, rutaInf.lastIndexOf('.')) + "informe.html";
+                    File informesDir = new File(basePath, "Informes");
+                    System.out.println("Informes dir: " + informesDir.getAbsolutePath());
+
+                    if (!informesDir.exists()) {
+                        boolean created = informesDir.mkdirs();
+                        System.out.println("Carpeta creada: " + created);
+                        if (!created) {
+                            // Si no se puede crear en basePath, usar directorio temporal del usuario
+                            informesDir = new File(System.getProperty("user.home"), "LrVolley_Informes");
+                            informesDir.mkdirs();
+                            System.out.println("Usando carpeta alternativa: " + informesDir.getAbsolutePath());
+                        }
+                    }
+
+                    String nombreBase = rutaInf.substring(rutaInf.lastIndexOf('/') + 1, rutaInf.lastIndexOf('.')) + "informe";
+
+                    String pdfOutputPath = new File(informesDir, nombreBase + ".pdf").getAbsolutePath();
+                    JasperExportManager.exportReportToPdfFile(jasperPrint, pdfOutputPath);
+                    System.out.println("PDF generado: " + pdfOutputPath);
+
+                    String outputHtmlFile = new File(informesDir, nombreBase + ".html").getAbsolutePath();
                     JasperExportManager.exportReportToHtmlFile(jasperPrint, outputHtmlFile);
+                    System.out.println("HTML generado: " + outputHtmlFile);
 
                     if (tipo == 0) {
                         wv.getEngine().load(new File(outputHtmlFile).toURI().toString());
