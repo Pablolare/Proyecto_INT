@@ -10,6 +10,6 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
 
-rootProject.name = 'Tema2-04-FXML'
-include('app')
+rootProject.name = 'LrVoley-TFG'
+include('desktop')
 include('api')
