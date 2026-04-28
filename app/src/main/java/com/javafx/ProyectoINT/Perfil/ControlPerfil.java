@@ -12,6 +12,8 @@ import com.javafx.ProyectoINT.modelos.UsuarioDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +29,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 public class ControlPerfil {
-    private ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+    private ObservableList<Usuario> listaBase = FXCollections.observableArrayList();
+    private FilteredList<Usuario> listaFiltrada;
+
+    @FXML
+    private TextField txtBuscar;
 
     @FXML
     private TextField txtNombre;
@@ -64,7 +70,22 @@ public class ControlPerfil {
         colContraseña.setCellValueFactory(new PropertyValueFactory<>("contraseña"));
         colRol.setCellValueFactory(new PropertyValueFactory<>("rol"));
         colCorreo.setCellValueFactory(new PropertyValueFactory<>("correo"));
-        tablaPerfil.setItems(listaUsuarios);
+        listaFiltrada = new FilteredList<>(listaBase, p -> true);
+        SortedList<Usuario> listaSorted = new SortedList<>(listaFiltrada);
+        listaSorted.comparatorProperty().bind(tablaPerfil.comparatorProperty());
+        tablaPerfil.setItems(listaSorted);
+
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> {
+            listaFiltrada.setPredicate(u -> {
+                if (newVal == null || newVal.trim().isEmpty()) return true;
+                String f = newVal.toLowerCase();
+                return u.getNombre().toLowerCase().contains(f)
+                    || u.getApellido().toLowerCase().contains(f)
+                    || u.getLogin().toLowerCase().contains(f)
+                    || (u.getCorreo() != null && u.getCorreo().toLowerCase().contains(f));
+            });
+        });
+
         cargarUsuariosDesdeBD();
 
         // Auto-rellenar campos con el usuario actual buscando en la base de datos
@@ -191,7 +212,7 @@ public class ControlPerfil {
             PreparedStatement statment = conexion.prepareStatement(consulta);
             ResultSet resultado = statment.executeQuery();
 
-            listaUsuarios.clear();
+            listaBase.clear();
 
             while (resultado.next()) {
                 Usuario usuario = new Usuario(
@@ -202,7 +223,7 @@ public class ControlPerfil {
                         resultado.getString("contraseña"),
                         resultado.getString("rol"),
                         resultado.getString("correo"));
-                listaUsuarios.add(usuario);
+                listaBase.add(usuario);
             }
 
             resultado.close();

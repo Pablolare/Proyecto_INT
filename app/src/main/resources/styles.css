@@ -520,7 +520,51 @@ HBox {
     -fx-border-color: transparent transparent rgba(99, 102, 241, 0.3) transparent;
     -fx-border-width: 0 0 2px 0;
 }
-/* FORZAR texto blanco en la tabla */
+/* Texto blanco en tabla - todos los estados posibles */
 .table-cell {
-    -fx-text-fill: #e2e8f0 !important;
+    -fx-text-fill: #e2e8f0;
+}
+
+.table-row-cell .table-cell {
+    -fx-text-fill: #e2e8f0;
+}
+
+.table-row-cell:filled .table-cell {
+    -fx-text-fill: #e2e8f0;
+}
+
+.table-row-cell:odd .table-cell {
+    -fx-text-fill: #e2e8f0;
+}
+
+.table-row-cell:even .table-cell {
+    -fx-text-fill: #e2e8f0;
+}
+
+.table-row-cell:hover .table-cell {
+    -fx-text-fill: #e2e8f0;
+}
+
+.table-row-cell:filled:hover .table-cell {
+    -fx-text-fill: #e2e8f0;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+}
+
+.table-row-cell:filled:selected .table-cell {
+    -fx-text-fill: white;
+}
+
+.table-row-cell:filled:selected:hover .table-cell {
+    -fx-text-fill: white;
+}
+
+.table-row-cell:focused .table-cell {
+    -fx-text-fill: #e2e8f0;
+}
+
+.table-row-cell:filled:focused .table-cell {
+    -fx-text-fill: #e2e8f0;
 }

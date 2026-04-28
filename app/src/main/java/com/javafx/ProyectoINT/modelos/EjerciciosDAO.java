@@ -28,6 +28,33 @@ public class EjerciciosDAO {
         }
     }
 
+    public int insertarEjercicioRetornarId(Ejercicios ejercicio) {
+        String sql = "INSERT INTO Ejercicio (nombre_ejer, tipo, finalidad) VALUES (?, ?, ?)";
+
+        try {
+            Connection conn = ConexionBD.getInstancia().getConexion();
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            stmt.setString(1, ejercicio.getNombre_ejer());
+            stmt.setString(2, ejercicio.getTipo());
+            stmt.setString(3, ejercicio.getFinalidad());
+
+            stmt.executeUpdate();
+            ResultSet keys = stmt.getGeneratedKeys();
+            int id = -1;
+            if (keys.next()) {
+                id = keys.getInt(1);
+            }
+            keys.close();
+            stmt.close();
+            return id;
+
+        } catch (SQLException e) {
+            System.out.println("Error al insertar ejercicio: " + e.getMessage());
+            return -1;
+        }
+    }
+
     public boolean actualizarEjercicio(Ejercicios ejercicio) {
         String sql = "UPDATE Ejercicio SET nombre_ejer=?, tipo=?, finalidad=? WHERE id_ejer=?";
 

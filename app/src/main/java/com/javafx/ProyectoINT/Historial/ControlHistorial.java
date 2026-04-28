@@ -9,7 +9,10 @@ import com.javafx.ProyectoINT.modelos.EntrenamientoDAO;
 import com.javafx.ProyectoINT.modelos.EntrenamientoDAO.DatosProgresion;
 import com.javafx.ProyectoINT.modelos.EntrenamientoDAO.EstadisticasUsuario;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +26,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
@@ -76,8 +80,13 @@ public class ControlHistorial {
     @FXML
     private TableColumn<Entrenamiento, Boolean> colCompletado;
     
+    @FXML
+    private TextField txtBuscar;
+
     private int idUsuarioActual;
     private EntrenamientoDAO dao;
+    private ObservableList<Entrenamiento> listaBase = FXCollections.observableArrayList();
+    private FilteredList<Entrenamiento> listaFiltrada;
     
     @FXML
     void initialize() {
@@ -91,6 +100,19 @@ public class ControlHistorial {
         colFallos.setCellValueFactory(new PropertyValueFactory<>("fallos"));
         colCompletado.setCellValueFactory(new PropertyValueFactory<>("completado"));
         
+        listaFiltrada = new FilteredList<>(listaBase, p -> true);
+        SortedList<Entrenamiento> listaSorted = new SortedList<>(listaFiltrada);
+        listaSorted.comparatorProperty().bind(tablaHistorial.comparatorProperty());
+        tablaHistorial.setItems(listaSorted);
+
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> {
+            listaFiltrada.setPredicate(e -> {
+                if (newVal == null || newVal.trim().isEmpty()) return true;
+                String f = newVal.toLowerCase();
+                return e.getNombre_entreno().toLowerCase().contains(f);
+            });
+        });
+
         tablaHistorial.setStyle("-fx-background-color: #1e293b;");
         
         colId.setStyle("-fx-text-fill: white; -fx-alignment: CENTER;");
@@ -188,23 +210,8 @@ public class ControlHistorial {
     }
 
     private void cargarTablaHistorial() {
-         System.out.println("========== CARGANDO TABLA ==========");
-    ObservableList<Entrenamiento> entrenamientos = dao.obtenerEntrenamientosUsuario(idUsuarioActual);
-    System.out.println("Total entrenamientos obtenidos: " + entrenamientos.size());
-    
-    for (Entrenamiento e : entrenamientos) {
-        System.out.println("  ID: " + e.getId_entreno() + 
-                          " | Usuario: " + e.getId_usuario() + 
-                          " | Nombre: " + e.getNombre_entreno() + 
-                          " | Reps: " + e.getRepeticiones() +
-                          " | Aciertos: " + e.getAciertos() + 
-                          " | Fallos: " + e.getFallos() +
-                          " | Completado: " + e.isCompletado());
-    }
-    
-    tablaHistorial.setItems(entrenamientos);
-    tablaHistorial.refresh();
-    System.out.println("✅ Items asignados a la tabla: " + tablaHistorial.getItems().size());
+        listaBase.clear();
+        listaBase.addAll(dao.obtenerEntrenamientosUsuario(idUsuarioActual));
     }
 
     @FXML

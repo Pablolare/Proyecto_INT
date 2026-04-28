@@ -1,17 +1,22 @@
 package com.javafx.ProyectoINT.EditarEjercicios;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 
 import com.javafx.ProyectoINT.ListarEjercicios.ControlListarEjercicios;
+import com.javafx.ProyectoINT.modelos.Categoria;
+import com.javafx.ProyectoINT.modelos.CategoriaDAO;
 import com.javafx.ProyectoINT.modelos.Ejercicios;
 import com.javafx.ProyectoINT.modelos.EjerciciosDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +26,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -28,26 +35,20 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 public class ControlEditarEjercicios {
-    @FXML
-    private TextField txFinalidad;
 
-    @FXML
-    private TextField txNombre;
+    @FXML private TextField txFinalidad;
+    @FXML private TextField txNombre;
+    @FXML private TextField txTipo;
+    @FXML private TextField txtBuscar;
+    @FXML private ListView<Categoria> listaCategorias;
 
-    @FXML
-    private TextField txTipo;
-
-    private ObservableList<Ejercicios> listaEjercicios = FXCollections.observableArrayList();
-    @FXML
-    private TableView<Ejercicios> tablaEditarEjercicios;
-    @FXML
-    private TableColumn<Ejercicios, Integer> colId;
-    @FXML
-    private TableColumn<Ejercicios, String> colNombreEjer;
-    @FXML
-    private TableColumn<Ejercicios, String> colTipo;
-    @FXML
-    private TableColumn<Ejercicios, String> colFinalidad;
+    private ObservableList<Ejercicios> listaBase = FXCollections.observableArrayList();
+    private FilteredList<Ejercicios> listaFiltrada;
+    @FXML private TableView<Ejercicios> tablaEditarEjercicios;
+    @FXML private TableColumn<Ejercicios, Integer> colId;
+    @FXML private TableColumn<Ejercicios, String> colNombreEjer;
+    @FXML private TableColumn<Ejercicios, String> colTipo;
+    @FXML private TableColumn<Ejercicios, String> colFinalidad;
 
     private ValidationSupport validationSupport;
 
@@ -57,8 +58,24 @@ public class ControlEditarEjercicios {
         colNombreEjer.setCellValueFactory(new PropertyValueFactory<>("nombre_ejer"));
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         colFinalidad.setCellValueFactory(new PropertyValueFactory<>("finalidad"));
-        tablaEditarEjercicios.setItems(listaEjercicios);
+
+        listaFiltrada = new FilteredList<>(listaBase, p -> true);
+        SortedList<Ejercicios> listaSorted = new SortedList<>(listaFiltrada);
+        listaSorted.comparatorProperty().bind(tablaEditarEjercicios.comparatorProperty());
+        tablaEditarEjercicios.setItems(listaSorted);
+
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> {
+            listaFiltrada.setPredicate(ej -> {
+                if (newVal == null || newVal.trim().isEmpty()) return true;
+                String f = newVal.toLowerCase();
+                return ej.getNombre_ejer().toLowerCase().contains(f)
+                    || ej.getTipo().toLowerCase().contains(f)
+                    || (ej.getFinalidad() != null && ej.getFinalidad().toLowerCase().contains(f));
+            });
+        });
+
         cargarEjerciciosDesdeBD();
+        cargarCategorias();
         configurarValidaciones();
 
         tablaEditarEjercicios.getSelectionModel().selectedItemProperty()
@@ -67,17 +84,39 @@ public class ControlEditarEjercicios {
                         txNombre.setText(newSelection.getNombre_ejer());
                         txTipo.setText(newSelection.getTipo());
                         txFinalidad.setText(newSelection.getFinalidad());
+                        cargarCategoriasDeEjercicio(newSelection.getId_ejer());
                     }
                 });
 
         if (ControlListarEjercicios.ejercicioSeleccionadoId >= 0) {
-            for (Ejercicios ej : listaEjercicios) {
+            for (Ejercicios ej : listaBase) {
                 if (ej.getId_ejer() == ControlListarEjercicios.ejercicioSeleccionadoId) {
                     tablaEditarEjercicios.getSelectionModel().select(ej);
                     break;
                 }
             }
             ControlListarEjercicios.ejercicioSeleccionadoId = -1;
+        }
+    }
+
+    private void cargarCategorias() {
+        CategoriaDAO dao = new CategoriaDAO();
+        listaCategorias.setItems(dao.cargarCategoriasDesdeBD());
+        listaCategorias.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    }
+
+    private void cargarCategoriasDeEjercicio(int idEjer) {
+        CategoriaDAO dao = new CategoriaDAO();
+        ObservableList<Categoria> asignadas = dao.obtenerCategoriasPorEjercicio(idEjer);
+        listaCategorias.getSelectionModel().clearSelection();
+        for (int i = 0; i < listaCategorias.getItems().size(); i++) {
+            Categoria cat = listaCategorias.getItems().get(i);
+            for (Categoria asignada : asignadas) {
+                if (cat.getId_categoria() == asignada.getId_categoria()) {
+                    listaCategorias.getSelectionModel().select(i);
+                    break;
+                }
+            }
         }
     }
 
@@ -112,9 +151,7 @@ public class ControlEditarEjercicios {
 
     @FXML
     void Actualizar(ActionEvent event) {
-        if (validationSupport.isInvalid()) {
-            return;
-        }
+        if (validationSupport.isInvalid()) return;
 
         Ejercicios seleccionado = tablaEditarEjercicios.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
@@ -131,6 +168,11 @@ public class ControlEditarEjercicios {
 
         EjerciciosDAO dao = new EjerciciosDAO();
         dao.actualizarEjercicio(seleccionado);
+
+        List<Categoria> categoriasSeleccionadas = listaCategorias.getSelectionModel().getSelectedItems();
+        CategoriaDAO catDao = new CategoriaDAO();
+        catDao.asignarCategoriasAEjercicio(seleccionado.getId_ejer(), categoriasSeleccionadas);
+
         cargarEjerciciosDesdeBD();
     }
 
@@ -159,6 +201,7 @@ public class ControlEditarEjercicios {
                     txNombre.clear();
                     txTipo.clear();
                     txFinalidad.clear();
+                    listaCategorias.getSelectionModel().clearSelection();
                 } else {
                     Alert error = new Alert(AlertType.ERROR);
                     error.setTitle("Error");
@@ -185,8 +228,8 @@ public class ControlEditarEjercicios {
 
     private void cargarEjerciciosDesdeBD() {
         EjerciciosDAO dao = new EjerciciosDAO();
-        listaEjercicios.clear();
-        listaEjercicios.addAll(dao.cargarEjerciciosDesdeBD());
+        listaBase.clear();
+        listaBase.addAll(dao.cargarEjerciciosDesdeBD());
     }
 
     @FXML

@@ -8,6 +8,8 @@ import com.javafx.ProyectoINT.modelos.EntrenamientoDAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +21,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
@@ -26,7 +29,10 @@ public class ControlEntrenos {
 
     public static String entrenoSeleccionado = "";
 
-    private ObservableList<Entrenamiento> listaEntrenamientos = FXCollections.observableArrayList();
+    private ObservableList<Entrenamiento> listaBase = FXCollections.observableArrayList();
+    private FilteredList<Entrenamiento> listaFiltrada;
+
+    @FXML private TextField txtBuscar;
     @FXML
     private TableView<Entrenamiento> tablaEntrenamientos;
     @FXML
@@ -50,7 +56,19 @@ public class ControlEntrenos {
         colFallos.setCellValueFactory(new PropertyValueFactory<>("fallos"));
         colAciertos.setCellValueFactory(new PropertyValueFactory<>("aciertos"));
         colCompletado.setCellValueFactory(new PropertyValueFactory<>("completado"));
-        tablaEntrenamientos.setItems(listaEntrenamientos);
+
+        listaFiltrada = new FilteredList<>(listaBase, p -> true);
+        SortedList<Entrenamiento> listaSorted = new SortedList<>(listaFiltrada);
+        listaSorted.comparatorProperty().bind(tablaEntrenamientos.comparatorProperty());
+        tablaEntrenamientos.setItems(listaSorted);
+
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> {
+            listaFiltrada.setPredicate(e -> {
+                if (newVal == null || newVal.trim().isEmpty()) return true;
+                return e.getNombre_entreno().toLowerCase().contains(newVal.toLowerCase());
+            });
+        });
+
         cargarEntrenosDesdeBD();
     }
 
@@ -150,6 +168,32 @@ public class ControlEntrenos {
     }
 
     @FXML
+    void PagNotas(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Notas.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
+        stage.show();
+    }
+
+    @FXML
+    void PagCategorias(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Categorias.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
+        stage.show();
+    }
+
+    @FXML
     void PagAtras(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
         Parent root = loader.load();
@@ -164,7 +208,7 @@ public class ControlEntrenos {
 
     private void cargarEntrenosDesdeBD() {
         EntrenamientoDAO dao = new EntrenamientoDAO();
-        listaEntrenamientos.clear();
-        listaEntrenamientos.addAll(dao.obtenerEntrenosAgrupadosUsuario(ControlInicioSesion.usuarioLogueadoId));
+        listaBase.clear();
+        listaBase.addAll(dao.obtenerEntrenosAgrupadosUsuario(ControlInicioSesion.usuarioLogueadoId));
     }
 }

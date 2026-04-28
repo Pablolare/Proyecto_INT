@@ -55,6 +55,9 @@ public class ControlPaginaPrincipal {
     private Button btnInformes;
 
     @FXML
+    private Button btnObjetivos;
+
+    @FXML
     void initialize() {
         colNombreEntreno.setCellValueFactory(new PropertyValueFactory<>("nombre_entreno"));
         colNumEjercicios.setCellValueFactory(new PropertyValueFactory<>("numEjercicios"));
@@ -108,6 +111,19 @@ public class ControlPaginaPrincipal {
     @FXML
     void PagInformes(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Informes.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
+        stage.show();
+    }
+
+    @FXML
+    void PagObjetivos(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Objetivos.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         boolean maximizado = stage.isMaximized();

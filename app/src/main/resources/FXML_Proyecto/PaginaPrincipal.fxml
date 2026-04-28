@@ -30,6 +30,9 @@
                   <Button fx:id="btnInformes" mnemonicParsing="false" onAction="#PagInformes" text="Informes" maxWidth="Infinity">
                      <tooltip><Tooltip text="Generar informes y estadísticas" /></tooltip>
                   </Button>
+                  <Button fx:id="btnObjetivos" mnemonicParsing="false" onAction="#PagObjetivos" text="Objetivos" maxWidth="Infinity">
+                     <tooltip><Tooltip text="Ver y gestionar tus objetivos" /></tooltip>
+                  </Button>
                </children>
             </VBox>
          </left>

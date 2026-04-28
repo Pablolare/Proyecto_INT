@@ -81,6 +81,7 @@
             </VBox>
 
             <Label styleClass="sub-header" text="Usuarios del Sistema" style="-fx-padding: 10 0 0 0;" />
+            <TextField fx:id="txtBuscar" promptText="Buscar usuario..." />
             <TableView fx:id="tablaPerfil" VBox.vgrow="ALWAYS">
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
