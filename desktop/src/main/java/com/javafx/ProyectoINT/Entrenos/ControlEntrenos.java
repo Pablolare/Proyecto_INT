@@ -33,29 +33,16 @@ public class ControlEntrenos {
     private FilteredList<Entrenamiento> listaFiltrada;
 
     @FXML private TextField txtBuscar;
-    @FXML
-    private TableView<Entrenamiento> tablaEntrenamientos;
-    @FXML
-    private TableColumn<Entrenamiento, String> colNombreEntreno;
-    @FXML
-    private TableColumn<Entrenamiento, Integer> colNumEjercicios;
-    @FXML
-    private TableColumn<Entrenamiento, Integer> colRepeticiones;
-    @FXML
-    private TableColumn<Entrenamiento, Integer> colFallos;
-    @FXML
-    private TableColumn<Entrenamiento, Integer> colAciertos;
-    @FXML
-    private TableColumn<Entrenamiento, Boolean> colCompletado;
+    @FXML private TableView<Entrenamiento> tablaEntrenamientos;
+    @FXML private TableColumn<Entrenamiento, String> colNombreEntreno;
+    @FXML private TableColumn<Entrenamiento, Integer> colNumEjercicios;
+    @FXML private TableColumn<Entrenamiento, String> colDescripcion;
 
     @FXML
     void initialize() {
         colNombreEntreno.setCellValueFactory(new PropertyValueFactory<>("nombre_entreno"));
         colNumEjercicios.setCellValueFactory(new PropertyValueFactory<>("numEjercicios"));
-        colRepeticiones.setCellValueFactory(new PropertyValueFactory<>("repeticiones"));
-        colFallos.setCellValueFactory(new PropertyValueFactory<>("fallos"));
-        colAciertos.setCellValueFactory(new PropertyValueFactory<>("aciertos"));
-        colCompletado.setCellValueFactory(new PropertyValueFactory<>("completado"));
+        colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
         listaFiltrada = new FilteredList<>(listaBase, p -> true);
         SortedList<Entrenamiento> listaSorted = new SortedList<>(listaFiltrada);
@@ -72,7 +59,6 @@ public class ControlEntrenos {
         cargarEntrenosDesdeBD();
     }
 
-
     @FXML
     void Borrar(ActionEvent event) {
         Entrenamiento seleccionado = tablaEntrenamientos.getSelectionModel().getSelectedItem();
@@ -88,7 +74,7 @@ public class ControlEntrenos {
         Alert confirmacion = new Alert(AlertType.CONFIRMATION);
         confirmacion.setTitle("Confirmar borrado");
         confirmacion.setHeaderText("Borrar entrenamiento '" + seleccionado.getNombre_entreno() + "'");
-        confirmacion.setContentText("Se borrarán todos los ejercicios asociados a este entrenamiento. ¿Estás seguro?");
+        confirmacion.setContentText("Se borrarán todos los ejercicios asociados. ¿Estás seguro?");
 
         confirmacion.showAndWait().ifPresent(respuesta -> {
             if (respuesta == ButtonType.OK) {
@@ -106,7 +92,6 @@ public class ControlEntrenos {
             }
         });
     }
-
 
     @FXML
     void Editar(ActionEvent event) throws IOException {
@@ -157,32 +142,6 @@ public class ControlEntrenos {
         }
         entrenoSeleccionado = seleccionado.getNombre_entreno();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/ListarEjercicios.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        boolean maximizado = stage.isMaximized();
-        double w = stage.getWidth(), h = stage.getHeight();
-        double x = stage.getX(), y = stage.getY();
-        stage.setScene(new Scene(root));
-        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
-        stage.show();
-    }
-
-    @FXML
-    void PagNotas(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Notas.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        boolean maximizado = stage.isMaximized();
-        double w = stage.getWidth(), h = stage.getHeight();
-        double x = stage.getX(), y = stage.getY();
-        stage.setScene(new Scene(root));
-        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
-        stage.show();
-    }
-
-    @FXML
-    void PagCategorias(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Categorias.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         boolean maximizado = stage.isMaximized();

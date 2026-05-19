@@ -2,7 +2,8 @@ package com.javafx.ProyectoINT.InicioSesion;
 
 import java.io.IOException;
 
-import com.javafx.ProyectoINT.ConexionBD;
+import com.javafx.ProyectoINT.ApiCliente;
+import com.javafx.ProyectoINT.SessionManager;
 import com.javafx.ProyectoINT.modelos.Usuario;
 
 import javafx.event.ActionEvent;
@@ -16,11 +17,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.sql.*;
-
 public class ControlInicioSesion {
 
-    // Variable estática para guardar el ID del usuario que inició sesión
     public static int usuarioLogueadoId = -1;
 
     @FXML
@@ -43,10 +41,11 @@ public class ControlInicioSesion {
             return;
         }
 
-        Usuario usuario = buscarUsuario(loginOCorreo);
+        Usuario usuario = ApiCliente.login(loginOCorreo, contraseña);
 
-        if (usuario != null && usuario.getContraseña().equals(contraseña)) {
+        if (usuario != null) {
             usuarioLogueadoId = usuario.getId_usuario();
+            SessionManager.iniciarSesion(usuario.getId_usuario(), usuario.getRol());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -63,41 +62,6 @@ public class ControlInicioSesion {
             alert.setContentText("Usuario o contraseña incorrectos");
             alert.showAndWait();
         }
-    }
-
-    private Usuario buscarUsuario(String loginOCorreo) {
-        String sql = "SELECT * FROM Usuario WHERE login = ? OR correo = ?";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, loginOCorreo);
-            stmt.setString(2, loginOCorreo);
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                Usuario usuario = new Usuario(
-                        rs.getInt("id_usuario"),
-                        rs.getString("nombre"),
-                        rs.getString("apellido"),
-                        rs.getString("login"),
-                        rs.getString("contraseña"),
-                        rs.getString("rol"),
-                        rs.getString("correo"));
-                rs.close();
-                stmt.close();
-                return usuario;
-            }
-
-            rs.close();
-            stmt.close();
-
-        } catch (SQLException e) {
-            System.out.println("Error al buscar usuario: " + e.getMessage());
-        }
-
-        return null;
     }
 
     @FXML

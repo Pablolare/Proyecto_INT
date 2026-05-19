@@ -3,9 +3,12 @@ package com.javafx.ProyectoINT.PaginaPrincipal;
 import java.io.IOException;
 
 import com.javafx.ProyectoINT.InicioSesion.ControlInicioSesion;
+import com.javafx.ProyectoINT.SessionManager;
 import com.javafx.ProyectoINT.modelos.Entrenamiento;
 import com.javafx.ProyectoINT.modelos.EntrenamientoDAO;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +23,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class ControlPaginaPrincipal {
 
@@ -34,13 +38,7 @@ public class ControlPaginaPrincipal {
     @FXML
     private TableColumn<Entrenamiento, Integer> colNumEjercicios;
     @FXML
-    private TableColumn<Entrenamiento, Integer> colRepeticiones;
-    @FXML
-    private TableColumn<Entrenamiento, Integer> colFallos;
-    @FXML
-    private TableColumn<Entrenamiento, Integer> colAciertos;
-    @FXML
-    private TableColumn<Entrenamiento, Boolean> colCompletado;
+    private TableColumn<Entrenamiento, String> colDescripcion;
 
     @FXML
     private Button btnAñadirEntreno;
@@ -58,15 +56,24 @@ public class ControlPaginaPrincipal {
     private Button btnObjetivos;
 
     @FXML
+    private Button btnGestionEjercicios;
+
+    @FXML
     void initialize() {
         colNombreEntreno.setCellValueFactory(new PropertyValueFactory<>("nombre_entreno"));
         colNumEjercicios.setCellValueFactory(new PropertyValueFactory<>("numEjercicios"));
-        colRepeticiones.setCellValueFactory(new PropertyValueFactory<>("repeticiones"));
-        colFallos.setCellValueFactory(new PropertyValueFactory<>("fallos"));
-        colAciertos.setCellValueFactory(new PropertyValueFactory<>("aciertos"));
-        colCompletado.setCellValueFactory(new PropertyValueFactory<>("completado"));
+        colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+
         TablaUltimoEntreno.setItems(listaEntrenamientos);
         cargarEjerciciosDesdeBD();
+
+        boolean esAdmin = SessionManager.esAdmin();
+        btnGestionEjercicios.setVisible(esAdmin);
+        btnGestionEjercicios.setManaged(esAdmin);
+
+        Timeline autoRefresh = new Timeline(new KeyFrame(Duration.seconds(10), e -> cargarEjerciciosDesdeBD()));
+        autoRefresh.setCycleCount(Timeline.INDEFINITE);
+        autoRefresh.play();
     }
 
     @FXML
@@ -137,6 +144,19 @@ public class ControlPaginaPrincipal {
     @FXML
     void Perfil(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Perfil.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        boolean maximizado = stage.isMaximized();
+        double w = stage.getWidth(), h = stage.getHeight();
+        double x = stage.getX(), y = stage.getY();
+        stage.setScene(new Scene(root));
+        if (maximizado) { stage.setMaximized(true); } else { stage.setWidth(w); stage.setHeight(h); stage.setX(x); stage.setY(y); }
+        stage.show();
+    }
+
+    @FXML
+    void PagGestionEjercicios(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/CrearEjercicio.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         boolean maximizado = stage.isMaximized();

@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -34,14 +35,20 @@ public class ControlRegistrar {
     private TextField txtNombreUsuario;
 
     @FXML
-    private TextField txtRol;
+    private ComboBox<String> cmbRol;
+
+    @FXML
+    void initialize() {
+        cmbRol.getItems().addAll("jugador", "administrador");
+        cmbRol.setValue("jugador");
+    }
 
     @FXML
     void CrearCuenta(ActionEvent event) throws IOException {
         String nombre = txtNombreUsuario.getText();
         String apellido = txtApellidos.getText();
         String contraseña = txtContraseña.getText();
-        String rol = txtRol.getText();
+        String rol = cmbRol.getValue();
         String correo = txtCorreo.getText();
         String confirmarContraseña = txtConfirmarContraseña.getText();
 

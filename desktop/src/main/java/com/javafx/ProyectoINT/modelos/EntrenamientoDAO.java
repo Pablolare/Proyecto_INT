@@ -1,234 +1,87 @@
 package com.javafx.ProyectoINT.modelos;
 
-import com.javafx.ProyectoINT.ConexionBD;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.javafx.ProyectoINT.ApiCliente;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EntrenamientoDAO {
 
     public boolean insertarEntrenamiento(Entrenamiento entrenamiento) {
-        String sql = "INSERT INTO Entrenamientos (id_usuario, id_ejer, nombre_entreno, repeticiones, fallos, aciertos, completado) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-
-            stmt.setInt(1, entrenamiento.getId_usuario());
-            stmt.setInt(2, entrenamiento.getId_ejer());
-            stmt.setString(3, entrenamiento.getNombre_entreno());
-            stmt.setInt(4, entrenamiento.getRepeticiones());
-            stmt.setInt(5, entrenamiento.getFallos());
-            stmt.setInt(6, entrenamiento.getAciertos());
-            stmt.setBoolean(7, entrenamiento.isCompletado());
-
-            stmt.executeUpdate();
-            stmt.close();
-            return true;
-
-        } catch (SQLException e) {
-            System.out.println("Error al insertar entrenamiento: " + e.getMessage());
-            return false;
-        }
+        return ApiCliente.insertarEntrenamiento(entrenamiento);
     }
 
     public boolean actualizarEntrenamiento(Entrenamiento entrenamiento) {
-        String sql = "UPDATE Entrenamientos SET id_usuario=?, id_ejer=?, nombre_entreno=?, repeticiones=?, fallos=?, aciertos=?, completado=? WHERE id_entreno=?";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-
-            stmt.setInt(1, entrenamiento.getId_usuario());
-            stmt.setInt(2, entrenamiento.getId_ejer());
-            stmt.setString(3, entrenamiento.getNombre_entreno());
-            stmt.setInt(4, entrenamiento.getRepeticiones());
-            stmt.setInt(5, entrenamiento.getFallos());
-            stmt.setInt(6, entrenamiento.getAciertos());
-            stmt.setBoolean(7, entrenamiento.isCompletado());
-            stmt.setInt(8, entrenamiento.getId_entreno());
-
-            stmt.executeUpdate();
-            stmt.close();
-            return true;
-
-        } catch (SQLException e) {
-            System.out.println("Error al actualizar entrenamiento: " + e.getMessage());
-            return false;
-        }
+        return ApiCliente.actualizarEntrenamiento(entrenamiento);
     }
 
     public boolean borrarEntrenamiento(int id_entreno) {
-        String sql = "DELETE FROM Entrenamientos WHERE id_entreno=?";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, id_entreno);
-
-            stmt.executeUpdate();
-            stmt.close();
-            return true;
-
-        } catch (SQLException e) {
-            System.out.println("Error al borrar entrenamiento: " + e.getMessage());
-            return false;
-        }
+        return ApiCliente.borrarEntrenamiento(id_entreno);
     }
 
     public boolean borrarEntrenamientoPorEjercicio(String nombreEntreno, int idEjer, int idUsuario) {
-        String sql = "DELETE FROM Entrenamientos WHERE nombre_entreno=? AND id_ejer=? AND id_usuario=?";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, nombreEntreno);
-            stmt.setInt(2, idEjer);
-            stmt.setInt(3, idUsuario);
-
-            stmt.executeUpdate();
-            stmt.close();
-            return true;
-
-        } catch (SQLException e) {
-            System.out.println("Error al borrar entrenamiento por ejercicio: " + e.getMessage());
-            return false;
-        }
+        return ApiCliente.borrarEntrenamientoPorEjercicio(nombreEntreno, idEjer, idUsuario);
     }
 
     public ObservableList<Entrenamiento> cargarEntrenamientosDesdeBD() {
-        ObservableList<Entrenamiento> lista = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM Entrenamientos";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Entrenamiento entrenamiento = new Entrenamiento(
-                        rs.getInt("id_entreno"),
-                        rs.getInt("id_usuario"),
-                        rs.getInt("id_ejer"),
-                        rs.getString("nombre_entreno"),
-                        rs.getInt("repeticiones"),
-                        rs.getInt("fallos"),
-                        rs.getInt("aciertos"),
-                        rs.getBoolean("completado"));
-                lista.add(entrenamiento);
-            }
-
-            rs.close();
-            stmt.close();
-
-        } catch (SQLException e) {
-            System.out.println("Error al obtener entrenamientos: " + e.getMessage());
-        }
-
-        return lista;
+        return ApiCliente.cargarEntrenamientos();
     }
 
     public ObservableList<Entrenamiento> obtenerEntrenamientosPorNombre(String nombreEntreno, int idUsuario) {
-        ObservableList<Entrenamiento> lista = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM Entrenamientos WHERE nombre_entreno = ? AND id_usuario = ?";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, nombreEntreno);
-            stmt.setInt(2, idUsuario);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Entrenamiento entrenamiento = new Entrenamiento(
-                        rs.getInt("id_entreno"),
-                        rs.getInt("id_usuario"),
-                        rs.getInt("id_ejer"),
-                        rs.getString("nombre_entreno"),
-                        rs.getInt("repeticiones"),
-                        rs.getInt("fallos"),
-                        rs.getInt("aciertos"),
-                        rs.getBoolean("completado"));
-                lista.add(entrenamiento);
-            }
-
-            rs.close();
-            stmt.close();
-
-        } catch (SQLException e) {
-            System.out.println("Error al obtener entrenamientos por nombre: " + e.getMessage());
-        }
-
-        return lista;
+        return ApiCliente.obtenerEntrenamientosPorNombre(nombreEntreno, idUsuario);
     }
 
     public ObservableList<Entrenamiento> obtenerEntrenosAgrupadosUsuario(int idUsuario) {
-        ObservableList<Entrenamiento> entrenamientos = FXCollections.observableArrayList();
-        String sql = "SELECT nombre_entreno, COUNT(*) as num_ejercicios, "
-                + "SUM(repeticiones) as repeticiones, SUM(fallos) as fallos, "
-                + "SUM(aciertos) as aciertos, MIN(completado) as completado "
-                + "FROM Entrenamientos WHERE id_usuario = ? "
-                + "GROUP BY nombre_entreno ORDER BY nombre_entreno ASC";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, idUsuario);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Entrenamiento e = new Entrenamiento(
-                        0, idUsuario, 0,
-                        rs.getString("nombre_entreno"),
-                        rs.getInt("repeticiones"),
-                        rs.getInt("fallos"),
-                        rs.getInt("aciertos"),
-                        rs.getBoolean("completado"));
-                e.setNumEjercicios(rs.getInt("num_ejercicios"));
-                entrenamientos.add(e);
-            }
-
-            rs.close();
-            pstmt.close();
-
-        } catch (SQLException e) {
-            System.err.println("Error al obtener entrenos agrupados: " + e.getMessage());
-            e.printStackTrace();
+        ObservableList<Entrenamiento> todos = ApiCliente.obtenerEntrenamientosUsuario(idUsuario);
+        Map<String, List<Entrenamiento>> grupos = new LinkedHashMap<>();
+        for (Entrenamiento e : todos) {
+            grupos.computeIfAbsent(e.getNombre_entreno(), k -> new ArrayList<>()).add(e);
         }
-
-        return entrenamientos;
+        ObservableList<Entrenamiento> resultado = FXCollections.observableArrayList();
+        for (Map.Entry<String, List<Entrenamiento>> entry : grupos.entrySet()) {
+            List<Entrenamiento> grupo = entry.getValue();
+            int totalAciertos = 0, totalFallos = 0;
+            boolean completado = true;
+            String descripcion = grupo.get(0).getDescripcion();
+            for (Entrenamiento e : grupo) {
+                totalAciertos += e.getAciertos();
+                totalFallos += e.getFallos();
+                if (!e.isCompletado()) completado = false;
+            }
+            Entrenamiento agrupado = new Entrenamiento(0, idUsuario, 0, entry.getKey(),
+                    descripcion, totalFallos, totalAciertos, completado);
+            agrupado.setNumEjercicios(grupo.size());
+            resultado.add(agrupado);
+        }
+        return resultado;
     }
 
     public boolean borrarEntrenamientoPorNombre(String nombreEntreno, int idUsuario) {
-        String sql = "DELETE FROM Entrenamientos WHERE nombre_entreno = ? AND id_usuario = ?";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, nombreEntreno);
-            stmt.setInt(2, idUsuario);
-            stmt.executeUpdate();
-            stmt.close();
-            return true;
-
-        } catch (SQLException e) {
-            System.out.println("Error al borrar entrenamiento por nombre: " + e.getMessage());
-            return false;
-        }
+        return ApiCliente.borrarEntrenamientoPorNombre(nombreEntreno, idUsuario);
     }
 
-    // ==================== MÉTODOS NUEVOS PARA EL GRÁFICO ====================
+    public List<DatosProgresion> obtenerProgresionUsuario(int idUsuario) {
+        return ApiCliente.obtenerProgresionUsuario(idUsuario);
+    }
 
-    /**
-     * Clase interna para representar datos de progresión
-     */
+    public ObservableList<Entrenamiento> obtenerEntrenamientosUsuario(int idUsuario) {
+        return ApiCliente.obtenerEntrenamientosUsuario(idUsuario);
+    }
+
+    public EstadisticasUsuario obtenerEstadisticas(int idUsuario) {
+        return ApiCliente.obtenerEstadisticas(idUsuario);
+    }
+
+    // ==================== Clases de datos internas (mantienen la misma interfaz) ====================
+
     public static class DatosProgresion {
-        private int numeroEntreno;
-        private int aciertos;
-        private int fallos;
-        private String nombreEntreno;
+        private final int numeroEntreno;
+        private final int aciertos;
+        private final int fallos;
+        private final String nombreEntreno;
 
         public DatosProgresion(int numeroEntreno, int aciertos, int fallos, String nombreEntreno) {
             this.numeroEntreno = numeroEntreno;
@@ -237,149 +90,21 @@ public class EntrenamientoDAO {
             this.nombreEntreno = nombreEntreno;
         }
 
-        public int getNumeroEntreno() {
-            return numeroEntreno;
-        }
-
-        public int getAciertos() {
-            return aciertos;
-        }
-
-        public int getFallos() {
-            return fallos;
-        }
-
-        public String getNombreEntreno() {
-            return nombreEntreno;
-        }
+        public int getNumeroEntreno() { return numeroEntreno; }
+        public int getAciertos() { return aciertos; }
+        public int getFallos() { return fallos; }
+        public String getNombreEntreno() { return nombreEntreno; }
     }
 
-    /**
-     * Obtiene la progresión de aciertos y fallos de un usuario específico
-     */
-    public List<DatosProgresion> obtenerProgresionUsuario(int idUsuario) {
-        List<DatosProgresion> progresion = new ArrayList<>();
-        String sql = "SELECT id_entreno, aciertos, fallos, nombre_entreno " +
-                "FROM Entrenamientos " +
-                "WHERE id_usuario = ? " +
-                "ORDER BY id_entreno ASC";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-
-            pstmt.setInt(1, idUsuario);
-            ResultSet rs = pstmt.executeQuery();
-
-            int contador = 1;
-            while (rs.next()) {
-                progresion.add(new DatosProgresion(
-                        contador++,
-                        rs.getInt("aciertos"),
-                        rs.getInt("fallos"),
-                        rs.getString("nombre_entreno")));
-            }
-
-            rs.close();
-            pstmt.close();
-
-        } catch (SQLException e) {
-            System.err.println("Error al obtener progresión: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        return progresion;
-    }
-
-    /**
-     * Obtiene todos los entrenamientos de un usuario
-     */
-    public ObservableList<Entrenamiento> obtenerEntrenamientosUsuario(int idUsuario) {
-        ObservableList<Entrenamiento> entrenamientos = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM Entrenamientos WHERE id_usuario = ? ORDER BY id_entreno ASC";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-
-            pstmt.setInt(1, idUsuario);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                entrenamientos.add(new Entrenamiento(
-                        rs.getInt("id_entreno"),
-                        rs.getInt("id_usuario"),
-                        rs.getInt("id_ejer"),
-                        rs.getString("nombre_entreno"),
-                        rs.getInt("repeticiones"),
-                        rs.getInt("fallos"),
-                        rs.getInt("aciertos"),
-                        rs.getBoolean("completado")));
-            }
-
-            rs.close();
-            pstmt.close();
-
-        } catch (SQLException e) {
-            System.err.println("Error al obtener entrenamientos: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        return entrenamientos;
-    }
-
-    /**
-     * Calcula estadísticas generales del usuario
-     */
-    public EstadisticasUsuario obtenerEstadisticas(int idUsuario) {
-        String sql = "SELECT " +
-                "COUNT(*) as total_entrenos, " +
-                "SUM(aciertos) as total_aciertos, " +
-                "SUM(fallos) as total_fallos, " +
-                "AVG(aciertos) as promedio_aciertos, " +
-                "AVG(fallos) as promedio_fallos " +
-                "FROM Entrenamientos WHERE id_usuario = ?";
-
-        try {
-            Connection conn = ConexionBD.getInstancia().getConexion();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-
-            pstmt.setInt(1, idUsuario);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                EstadisticasUsuario stats = new EstadisticasUsuario(
-                        rs.getInt("total_entrenos"),
-                        rs.getInt("total_aciertos"),
-                        rs.getInt("total_fallos"),
-                        rs.getDouble("promedio_aciertos"),
-                        rs.getDouble("promedio_fallos"));
-
-                rs.close();
-                pstmt.close();
-                return stats;
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al obtener estadísticas: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    /**
-     * Clase para estadísticas del usuario
-     */
     public static class EstadisticasUsuario {
-        private int totalEntrenos;
-        private int totalAciertos;
-        private int totalFallos;
-        private double promedioAciertos;
-        private double promedioFallos;
+        private final int totalEntrenos;
+        private final int totalAciertos;
+        private final int totalFallos;
+        private final double promedioAciertos;
+        private final double promedioFallos;
 
         public EstadisticasUsuario(int totalEntrenos, int totalAciertos, int totalFallos,
-                double promedioAciertos, double promedioFallos) {
+                                   double promedioAciertos, double promedioFallos) {
             this.totalEntrenos = totalEntrenos;
             this.totalAciertos = totalAciertos;
             this.totalFallos = totalFallos;
@@ -387,25 +112,11 @@ public class EntrenamientoDAO {
             this.promedioFallos = promedioFallos;
         }
 
-        public int getTotalEntrenos() {
-            return totalEntrenos;
-        }
-
-        public int getTotalAciertos() {
-            return totalAciertos;
-        }
-
-        public int getTotalFallos() {
-            return totalFallos;
-        }
-
-        public double getPromedioAciertos() {
-            return promedioAciertos;
-        }
-
-        public double getPromedioFallos() {
-            return promedioFallos;
-        }
+        public int getTotalEntrenos() { return totalEntrenos; }
+        public int getTotalAciertos() { return totalAciertos; }
+        public int getTotalFallos() { return totalFallos; }
+        public double getPromedioAciertos() { return promedioAciertos; }
+        public double getPromedioFallos() { return promedioFallos; }
 
         public double getPorcentajeAciertos() {
             int total = totalAciertos + totalFallos;

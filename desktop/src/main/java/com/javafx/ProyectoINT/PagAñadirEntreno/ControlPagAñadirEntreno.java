@@ -25,6 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -33,32 +34,20 @@ public class ControlPagAñadirEntreno {
     private ObservableList<Ejercicios> listaEjercicios = FXCollections.observableArrayList();
     private ObservableList<Ejercicios> listaEjerciciosEntreno = FXCollections.observableArrayList();
 
-    @FXML
-    private TableView<Ejercicios> tablaEjerNuevoEntreno;
-    @FXML
-    private TableColumn<Ejercicios, String> colNombreEjer;
-    @FXML
-    private TableColumn<Ejercicios, String> colTipo;
-    @FXML
-    private TableColumn<Ejercicios, String> colFinalidad;
+    @FXML private TableView<Ejercicios> tablaEjerNuevoEntreno;
+    @FXML private TableColumn<Ejercicios, String> colNombreEjer;
+    @FXML private TableColumn<Ejercicios, String> colTipo;
+    @FXML private TableColumn<Ejercicios, String> colFinalidad;
 
-    @FXML
-    private TableView<Ejercicios> tablaEjerDelEntreno;
-    @FXML
-    private TableColumn<Ejercicios, String> colNombreEjerEntreno;
-    @FXML
-    private TableColumn<Ejercicios, String> colTipoEntreno;
-    @FXML
-    private TableColumn<Ejercicios, String> colFinalidadEntreno;
+    @FXML private TableView<Ejercicios> tablaEjerDelEntreno;
+    @FXML private TableColumn<Ejercicios, String> colNombreEjerEntreno;
+    @FXML private TableColumn<Ejercicios, String> colTipoEntreno;
+    @FXML private TableColumn<Ejercicios, String> colFinalidadEntreno;
 
-    @FXML
-    private TextField txtNuevoEntreno;
-
-    @FXML
-    private Label lblValidacion;
-
-    @FXML
-    private Button btnGuardarEntreno;
+    @FXML private TextField txtNuevoEntreno;
+    @FXML private TextArea txtDescripcion;
+    @FXML private Label lblValidacion;
+    @FXML private Button btnGuardarEntreno;
 
     @FXML
     void initialize() {
@@ -80,20 +69,17 @@ public class ControlPagAñadirEntreno {
     @FXML
     void AgregarEjercicio(ActionEvent event) {
         ObservableList<Ejercicios> seleccionados = tablaEjerNuevoEntreno.getSelectionModel().getSelectedItems();
-
         if (seleccionados == null || seleccionados.isEmpty()) {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Sin selección");
             alert.setHeaderText("Ningún ejercicio seleccionado");
-            alert.setContentText(
-                    "Selecciona uno o varios ejercicios de la tabla para agregarlos al entrenamiento (mantén Ctrl para seleccionar varios)");
+            alert.setContentText("Selecciona uno o varios ejercicios (mantén Ctrl para varios)");
             alert.showAndWait();
             return;
         }
-
-        List<Ejercicios> copiaSeleccionados = new ArrayList<>(seleccionados);
-        listaEjerciciosEntreno.addAll(copiaSeleccionados);
-        listaEjercicios.removeAll(copiaSeleccionados);
+        List<Ejercicios> copia = new ArrayList<>(seleccionados);
+        listaEjerciciosEntreno.addAll(copia);
+        listaEjercicios.removeAll(copia);
         tablaEjerNuevoEntreno.getSelectionModel().clearSelection();
         ocultarValidacion();
     }
@@ -101,35 +87,33 @@ public class ControlPagAñadirEntreno {
     @FXML
     void QuitarEjercicio(ActionEvent event) {
         ObservableList<Ejercicios> seleccionados = tablaEjerDelEntreno.getSelectionModel().getSelectedItems();
-
         if (seleccionados == null || seleccionados.isEmpty()) {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Sin selección");
             alert.setHeaderText("Ningún ejercicio seleccionado");
-            alert.setContentText("Selecciona uno o varios ejercicios de la tabla del entreno para quitarlos");
+            alert.setContentText("Selecciona uno o varios ejercicios del entreno para quitarlos");
             alert.showAndWait();
             return;
         }
-
-        List<Ejercicios> copiaSeleccionados = new ArrayList<>(seleccionados);
-        listaEjercicios.addAll(copiaSeleccionados);
-        listaEjerciciosEntreno.removeAll(copiaSeleccionados);
+        List<Ejercicios> copia = new ArrayList<>(seleccionados);
+        listaEjercicios.addAll(copia);
+        listaEjerciciosEntreno.removeAll(copia);
         tablaEjerDelEntreno.getSelectionModel().clearSelection();
     }
 
     @FXML
     void GuardarEntreno(ActionEvent event) throws IOException {
-        String nombreEntrenamiento = txtNuevoEntreno.getText();
-        if (nombreEntrenamiento == null || nombreEntrenamiento.trim().isEmpty()) {
+        String nombre = txtNuevoEntreno.getText();
+        if (nombre == null || nombre.trim().isEmpty()) {
             mostrarValidacion("El nombre del entrenamiento es obligatorio");
             return;
         }
-
         if (listaEjerciciosEntreno.isEmpty()) {
             mostrarValidacion("Debes añadir al menos un ejercicio al entrenamiento");
             return;
         }
 
+        String descripcion = txtDescripcion.getText() != null ? txtDescripcion.getText().trim() : "";
         int idUsuario = ControlInicioSesion.usuarioLogueadoId;
         EntrenamientoDAO dao = new EntrenamientoDAO();
         int insertados = 0;
@@ -137,45 +121,35 @@ public class ControlPagAñadirEntreno {
 
         for (Ejercicios ejercicio : listaEjerciciosEntreno) {
             Entrenamiento entrenamiento = new Entrenamiento(
-                    idUsuario,
-                    ejercicio.getId_ejer(),
-                    nombreEntrenamiento.trim(),
-                    0, 0, 0, false);
-
-            if (dao.insertarEntrenamiento(entrenamiento)) {
-                insertados++;
-            } else {
-                huboError = true;
-            }
+                    idUsuario, ejercicio.getId_ejer(), nombre.trim(),
+                    descripcion, 0, 0, false);
+            if (dao.insertarEntrenamiento(entrenamiento)) insertados++;
+            else huboError = true;
         }
 
         if (huboError && insertados == 0) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Error al guardar");
-            alert.setContentText(
-                    "No se pudo guardar el entrenamiento. Es posible que ya exista un entrenamiento con ese nombre.");
+            alert.setContentText("No se pudo guardar el entrenamiento.");
             alert.showAndWait();
             return;
         }
-
         if (huboError) {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Guardado parcial");
             alert.setHeaderText("Algunos ejercicios no se guardaron");
-            alert.setContentText(
-                    "Se guardaron " + insertados + " de " + listaEjerciciosEntreno.size() + " ejercicios.");
+            alert.setContentText("Se guardaron " + insertados + " de " + listaEjerciciosEntreno.size() + " ejercicios.");
             alert.showAndWait();
         } else {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Entrenamiento guardado");
             alert.setHeaderText("Guardado correctamente");
-            alert.setContentText("El entrenamiento '" + nombreEntrenamiento.trim()
-                    + "' se ha creado con " + insertados + " ejercicio(s).");
+            alert.setContentText("El entrenamiento '" + nombre.trim() + "' se ha creado con " + insertados + " ejercicio(s).");
             alert.showAndWait();
         }
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/PaginaPrincipal.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML_Proyecto/Entrenos.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         boolean maximizado = stage.isMaximized();
@@ -201,9 +175,8 @@ public class ControlPagAñadirEntreno {
 
     private void cargarEjerciciosDesdeBD() {
         EjerciciosDAO dao = new EjerciciosDAO();
-        ObservableList<Ejercicios> todosEjercicios = dao.cargarEjerciciosDesdeBD();
         listaEjercicios.clear();
-        listaEjercicios.addAll(todosEjercicios);
+        listaEjercicios.addAll(dao.cargarEjerciciosDesdeBD());
     }
 
     private void mostrarValidacion(String mensaje) {

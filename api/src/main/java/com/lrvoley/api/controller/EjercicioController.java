@@ -34,6 +34,11 @@ public class EjercicioController {
         return repo.findByTipo(tipo);
     }
 
+    @GetMapping("/porEntreno")
+    public List<Ejercicio> getByEntreno(@RequestParam String nombre, @RequestParam int idUsuario) {
+        return repo.findByEntrenoNombreAndIdUsuario(nombre, idUsuario);
+    }
+
     @PostMapping
     public Ejercicio create(@RequestBody Ejercicio ejercicio) {
         return repo.save(ejercicio);

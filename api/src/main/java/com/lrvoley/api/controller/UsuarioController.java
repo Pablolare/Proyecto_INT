@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -50,5 +51,18 @@ public class UsuarioController {
         if (!repo.existsById(id)) return ResponseEntity.notFound().build();
         repo.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Usuario> login(@RequestBody Map<String, String> credenciales) {
+        String loginOCorreo = credenciales.get("login");
+        String contrasena = credenciales.get("contrasena");
+        java.util.Optional<Usuario> usuario = repo.findByLogin(loginOCorreo);
+        if (usuario.isEmpty()) {
+            usuario = repo.findByCorreo(loginOCorreo);
+        }
+        return usuario.filter(u -> u.getContrasena().equals(contrasena))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(401).build());
     }
 }

@@ -20,7 +20,9 @@ public class Entrenamiento {
     @Column(name = "nombre_entreno")
     private String nombreEntreno;
 
-    private int repeticiones;
+    @Column(columnDefinition = "TEXT")
+    private String descripcion;
+
     private int fallos;
     private int aciertos;
     private boolean completado;
@@ -35,8 +37,8 @@ public class Entrenamiento {
     public void setIdEjer(int idEjer) { this.idEjer = idEjer; }
     public String getNombreEntreno() { return nombreEntreno; }
     public void setNombreEntreno(String nombreEntreno) { this.nombreEntreno = nombreEntreno; }
-    public int getRepeticiones() { return repeticiones; }
-    public void setRepeticiones(int repeticiones) { this.repeticiones = repeticiones; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
     public int getFallos() { return fallos; }
     public void setFallos(int fallos) { this.fallos = fallos; }
     public int getAciertos() { return aciertos; }

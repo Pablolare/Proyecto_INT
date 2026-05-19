@@ -29,6 +29,11 @@ public class CategoriaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/ejercicio/{idEjer}")
+    public List<Categoria> getByEjercicio(@PathVariable int idEjer) {
+        return repo.findByEjercicioId(idEjer);
+    }
+
     @PostMapping
     public Categoria create(@RequestBody Categoria categoria) {
         return repo.save(categoria);
@@ -41,6 +46,16 @@ public class CategoriaController {
             c.setDescripcion(datos.getDescripcion());
             return ResponseEntity.ok(repo.save(c));
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/ejercicio/{idEjer}")
+    public ResponseEntity<Void> asignarCategorias(@PathVariable int idEjer,
+                                                   @RequestBody List<Integer> idCategorias) {
+        repo.deleteEjercicioCategoria(idEjer);
+        for (int idCat : idCategorias) {
+            repo.insertEjercicioCategoria(idEjer, idCat);
+        }
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

@@ -33,6 +33,9 @@
                   <Button fx:id="btnObjetivos" mnemonicParsing="false" onAction="#PagObjetivos" text="Objetivos" maxWidth="Infinity">
                      <tooltip><Tooltip text="Ver y gestionar tus objetivos" /></tooltip>
                   </Button>
+                  <Button fx:id="btnGestionEjercicios" visible="false" managed="false" mnemonicParsing="false" onAction="#PagGestionEjercicios" text="Gestión Ejercicios" maxWidth="Infinity">
+                     <tooltip><Tooltip text="Crear y editar ejercicios (admin)" /></tooltip>
+                  </Button>
                </children>
             </VBox>
          </left>
@@ -45,12 +48,9 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                      <columns>
-                        <TableColumn fx:id="colNombreEntreno" prefWidth="180.0" text="Nombre Entreno" />
+                        <TableColumn fx:id="colNombreEntreno" prefWidth="160.0" text="Nombre Entreno" />
                         <TableColumn fx:id="colNumEjercicios" prefWidth="80.0" text="Ejercicios" />
-                        <TableColumn fx:id="colRepeticiones" prefWidth="100.0" text="Repeticiones" />
-                        <TableColumn fx:id="colFallos" prefWidth="75.0" text="Fallos" />
-                        <TableColumn fx:id="colAciertos" prefWidth="75.0" text="Aciertos" />
-                        <TableColumn fx:id="colCompletado" prefWidth="150.0" text="Completado" />
+                        <TableColumn fx:id="colDescripcion" prefWidth="340.0" text="Descripción" />
                      </columns>
                   </TableView>
                </children>

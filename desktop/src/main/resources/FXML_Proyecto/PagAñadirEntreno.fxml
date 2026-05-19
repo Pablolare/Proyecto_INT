@@ -5,6 +5,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.HBox?>
@@ -28,6 +29,13 @@
                 <TextField fx:id="txtNuevoEntreno" promptText="Escribe el nombre del entrenamiento...">
                    <tooltip><Tooltip text="Nombre identificativo para el nuevo entrenamiento" /></tooltip>
                 </TextField>
+            </VBox>
+
+            <VBox spacing="8.0">
+               <Label text="Descripción" styleClass="label-bold"/>
+               <TextArea fx:id="txtDescripcion" promptText="Describe el objetivo del entrenamiento..." prefRowCount="3" wrapText="true">
+                  <tooltip><Tooltip text="Descripción del entrenamiento (opcional)" /></tooltip>
+               </TextArea>
             </VBox>
 
             <Label fx:id="lblValidacion" text="" style="-fx-text-fill: #f43f5e; -fx-font-weight: 600;" managed="false" visible="false"/>

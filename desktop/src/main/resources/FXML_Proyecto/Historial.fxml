@@ -49,9 +49,8 @@
                     <columns>
                       <TableColumn fx:id="colId" prefWidth="60.0" text="ID" style="-fx-alignment: CENTER;" />
                       <TableColumn fx:id="colIdUsuario" prefWidth="80.0" text="Usuario" style="-fx-alignment: CENTER;" />
-                      <TableColumn fx:id="colNombre" prefWidth="220.0" text="Nombre Entreno" style="-fx-alignment: CENTER_LEFT;" />
-                      <TableColumn fx:id="colRepeticiones" prefWidth="100.0" text="Repeticiones" style="-fx-alignment: CENTER;" />
-                      <TableColumn fx:id="colAciertos" prefWidth="90.0" text="Aciertos" style="-fx-alignment: CENTER;" />
+                      <TableColumn fx:id="colNombre" prefWidth="280.0" text="Nombre Entreno" style="-fx-alignment: CENTER_LEFT;" />
+                      <TableColumn fx:id="colAciertos" prefWidth="100.0" text="Aciertos" style="-fx-alignment: CENTER;" />
                       <TableColumn fx:id="colFallos" prefWidth="80.0" text="Fallos" style="-fx-alignment: CENTER;" />
                       <TableColumn fx:id="colCompletado" prefWidth="100.0" text="Completado" style="-fx-alignment: CENTER;" />
                     </columns>

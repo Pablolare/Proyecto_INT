@@ -28,6 +28,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -95,9 +96,9 @@ public class ControlInformes {
     void buttonInforme2(ActionEvent event) {
         Map<String, Object> parametros = new HashMap<>();
         if (checkCombo.isSelected()) {
-            lanzaInforme("/Informes/LrVolley-Grafica.jasper", parametros, 0);
+            lanzaInforme("/Informes/LrVolley-Grafica.jrxml", parametros, 0);
         } else {
-            lanzaInforme("/Informes/LrVolley-Grafica.jasper", parametros, 1);
+            lanzaInforme("/Informes/LrVolley-Grafica.jrxml", parametros, 1);
         }
     }
 
@@ -176,7 +177,12 @@ public class ControlInformes {
 
     private void lanzaInforme(String rutaInf, Map<String, Object> param, int tipo) {
         try {
-            JasperReport report = (JasperReport) JRLoader.loadObject(getClass().getResourceAsStream(rutaInf));
+            JasperReport report;
+            if (rutaInf.endsWith(".jrxml")) {
+                report = JasperCompileManager.compileReport(getClass().getResourceAsStream(rutaInf));
+            } else {
+                report = (JasperReport) JRLoader.loadObject(getClass().getResourceAsStream(rutaInf));
+            }
             try {
                 JasperPrint jasperPrint = JasperFillManager.fillReport(report, param, this.conexion);
 
